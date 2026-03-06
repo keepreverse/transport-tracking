@@ -1,0 +1,930 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f0f4f8;
+    color: #1e293b;
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    padding: 32px 40px;
+    background: #f8fafc;
+    width: 100%;
+}
+
+/* Заголовок и фильтры */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.page-header h1 {
+    font-weight: 700;
+    font-size: 2rem;
+    color: #0f172a;
+    margin: 0;
+}
+
+.filter-section {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: #f1f5f9;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.filter-btn.active {
+    background: #2563eb;
+    color: white;
+}
+
+.filter-btn i {
+    font-size: 1rem;
+}
+
+.search-input {
+    padding: 10px 18px;
+    border: 1px solid #e2e8f0;
+    border-radius: 40px;
+    font-size: 0.95rem;
+    background: white;
+    width: 400px;
+    transition: border 0.15s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.btn-create {
+    background: #2563eb;
+    border: none;
+    border-radius: 40px;
+    padding: 10px 24px;
+    font-weight: 600;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.btn-create:hover {
+    background: #1d4ed8;
+}
+
+
+.track-card {
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    border: 1px solid #eef2f6;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    transition: all 0.2s;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.track-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+    border-color: #cbd5e1;
+}
+
+.track-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.track-card-header i {
+    font-size: 2rem;
+    color: #2563eb;
+    width: 40px;
+    text-align: center;
+}
+
+.track-card-header h3 {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0;
+    color: #0f172a;
+    flex: 1;
+}
+
+.track-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.track-status {
+    font-size: 0.9rem;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.track-status i {
+    color: #2563eb;
+    font-size: 0.9rem;
+}
+
+.track-date {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Прогресс-бар в карточке */
+.track-progress {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 20px;
+    margin: 8px 0 4px;
+    overflow: hidden;
+}
+
+.track-progress-fill {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 20px;
+    width: 0%;
+    transition: width 0.2s;
+}
+
+.modal-header {
+    border-bottom: 2px solid #f1f5f9;
+    padding: 20px 28px;
+}
+
+.modal-body {
+    padding: 28px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: white;
+    border-radius: 28px;
+    max-width: 800px; /* ограничим ширину */
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+}
+
+.transport-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.transport-option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    padding: 8px 16px;
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.transport-option input {
+    margin-right: 4px;
+}
+
+
+.status-point {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 80px;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.point-date {
+    font-size: 0.7rem;
+    color: #64748b;
+    font-style: italic;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    background: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.point-icon {
+    width: 44px;
+    height: 44px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #334155;
+    margin-bottom: 6px;
+    transition: all 0.15s;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+}
+
+.status-point.active .point-icon {
+    border-color: #2563eb;
+    background: #eff6ff;
+    color: #2563eb;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(37,99,235,0.15);
+}
+
+.point-label {
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: #334155;
+    max-width: 80px;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.control-panel {
+    background: white;
+    border-radius: 28px;
+    padding: 28px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+    margin: 30px 0 20px;
+    border: 1px solid #edf2f7;
+}
+
+.status-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-end;
+}
+
+.selector-item {
+    flex: 1 1 220px;
+}
+
+.selector-item label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #475569;
+    margin-bottom: 6px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.selector-item .form-select,
+.selector-item .form-control {
+    border-radius: 20px;
+    border: 2px solid #e2e8f0;
+    padding: 12px 18px;
+    font-weight: 500;
+    background: #f9fcff;
+    transition: border 0.15s;
+}
+
+.selector-item .form-select:focus,
+.selector-item .form-control:focus {
+    border-color: #2563eb;
+    outline: none;
+    background: white;
+}
+
+.btn-update {
+    background: #2563eb;
+    border: none;
+    border-radius: 40px;
+    padding: 12px 32px;
+    font-weight: 600;
+    color: white;
+    transition: background 0.15s;
+    width: 100%;
+}
+
+.btn-update:hover {
+    background: #1d4ed8;
+}
+
+.files-section {
+    background: white;
+    border-radius: 24px;
+    padding: 24px;
+    margin-top: 20px;
+    border: 1px solid #edf2f7;
+}
+
+.files-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.files-header h5 {
+    margin: 0;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-upload {
+    background: #059669;
+    border: none;
+    border-radius: 40px;
+    padding: 10px 22px;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+}
+
+.btn-upload:hover {
+    background: #047857;
+}
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.file-item {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #e2e8f0;
+    transition: background 0.1s;
+}
+
+.file-item:hover {
+    background: #f1f5f9;
+}
+
+.file-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.file-info i {
+    font-size: 1.3rem;
+    color: #2563eb;
+}
+
+.file-info span {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
+
+.btn-download {
+    background: none;
+    border: 2px solid #2563eb;
+    border-radius: 30px;
+    padding: 5px 16px;
+    color: #2563eb;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-download:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.empty-files {
+    color: #94a3b8;
+    font-style: italic;
+    padding: 24px;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 16px;
+}
+
+.status-detail-info {
+    margin-bottom: 24px;
+}
+
+.status-detail-info h6 {
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 12px;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    resize: vertical;
+    min-height: 80px;
+    background: #f9fcff;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: white;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 20px;
+    }
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .search-input {
+        width: 100%;
+    }
+}
+
+.track-mini-timeline {
+    position: relative;
+    margin-top: 10px;
+    padding: 5px 0;
+}
+
+.mini-progress-line {
+    height: 3px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    position: relative;
+    margin: 0 5px;
+}
+
+.mini-progress-fill {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 3px;
+    transition: width 0.2s;
+}
+
+.mini-points {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-top: -12px;
+    padding: 0 2px;
+}
+
+.mini-point {
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: #475569;
+    z-index: 2;
+}
+
+.mini-point i {
+    font-size: 0.7rem;
+}
+
+.btn-back {
+    background: none;
+    border: none;
+    color: #2563eb;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+.btn-back:hover {
+    color: #1d4ed8;
+}
+
+.track-detail-page {
+    padding: 20px 0;
+}
+
+
+/* Завершённые точки */
+.point-icon.completed {
+    background: #d1fae5;
+    border-color: #10b981;
+    color: #065f46;
+}
+
+
+/* Стили для кастомного селекта */
+.custom-select {
+    appearance: none;
+    background: white url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 1rem center;
+    background-size: 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 12px 18px;
+    font-weight: 500;
+    width: 100%;
+    cursor: pointer;
+}
+
+.custom-select:focus {
+    border-color: #2563eb;
+    outline: none;
+}
+
+/* Кнопка сортировки */
+.sort-btn {
+    background: #f1f5f9;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sort-btn.active {
+    background: #2563eb;
+    color: white;
+}
+
+
+.track-card {
+    width: 100%;
+    /* остальное без изменений */
+}
+
+/* Мини-шкала на карточке */
+.track-mini-timeline {
+    position: relative;
+    margin-top: 15px;
+    padding: 5px 0;
+}
+
+.mini-progress-line {
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    position: relative;
+    margin: 0 10px;
+}
+
+.mini-progress-fill {
+    height: 100%;
+    background: #2563eb;
+    border-radius: 4px;
+    transition: width 0.2s;
+}
+
+.mini-points {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-top: -16px;
+    padding: 0 5px;
+}
+
+.mini-point {
+    width: 28px;
+    height: 28px;
+    background: white;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #475569;
+    z-index: 2;
+}
+
+
+/* Стили для flatpickr в соответствии с дизайном */
+.flatpickr-calendar {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 30px -10px rgba(0,0,0,0.15);
+    border: 1px solid #e2e8f0;
+    font-family: inherit;
+}
+
+.flatpickr-day.selected, 
+.flatpickr-day.startRange, 
+.flatpickr-day.endRange, 
+.flatpickr-day.selected.inRange, 
+.flatpickr-day.startRange.inRange, 
+.flatpickr-day.endRange.inRange, 
+.flatpickr-day.selected:focus, 
+.flatpickr-day.startRange:focus, 
+.flatpickr-day.endRange:focus, 
+.flatpickr-day.selected:hover, 
+.flatpickr-day.startRange:hover, 
+.flatpickr-day.endRange:hover {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.flatpickr-day.today {
+    border-color: #2563eb;
+}
+
+.flatpickr-day.today:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+    fill: #2563eb;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Вставьте в конец файла или замените соответствующие блоки */
+
+.progress-track {
+    position: relative;
+    margin: 60px 0 40px;
+}
+
+.timeline-inner {
+    position: relative;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.progress-line {
+    position: relative;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.progress-fill {
+    position: absolute;
+    height: 100%;
+    background: #2563eb;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.2s ease;
+}
+
+.transport-marker {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    transform: translateX(-50%);
+    font-size: 1.8rem;
+    color: #1e293b;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    transition: left 0.2s ease;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Пройденные точки */
+.status-point.completed .point-icon {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+.mini-point.completed {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+/* Контейнер точек - чтобы иконки были на линии */
+.points-container {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-top: -22px; /* центр иконки на линии */
+    padding: 0 10px;
+}
+
+/* Сортировка */
+.sort-select {
+    padding: 8px 16px;
+    border-radius: 40px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* Сетка треков - один в строку */
+.tracks-grid {
+    grid-template-columns: 1fr;
+}
+
+@media (max-width: 768px) {
+    .filter-section {
+        flex-wrap: wrap;
+    }
+    .sort-select {
+        width: 100%;
+    }
+}
+
+
+
+
+
+
+
+/* Транспортный маркер: чёрный, над линией, с коррекцией позиции */
+.transport-marker {
+    position: absolute;
+    top: -60px;
+    left: 0;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    color: #1e293b; /* чёрный */
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    transition: left 0.2s ease;
+    z-index: 10;
+    pointer-events: none;
+    will-change: left;
+}
+
+/* Точки на линии */
+.points-container {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    margin-top: -30px; /* центр иконки на линии */
+    padding: 0 10px;
+}
+
+/* Прогресс-линия */
+.progress-line {
+    position: relative;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    margin: 0 30px;
+}
+
+/* Стили для календаря flatpickr – светлая тема */
+.flatpickr-calendar {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    font-family: inherit;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange,
+.flatpickr-day.selected.inRange,
+.flatpickr-day.startRange.inRange,
+.flatpickr-day.endRange.inRange,
+.flatpickr-day.selected:focus,
+.flatpickr-day.startRange:focus,
+.flatpickr-day.endRange:focus,
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover,
+.flatpickr-day.selected.prevMonthDay,
+.flatpickr-day.startRange.prevMonthDay,
+.flatpickr-day.endRange.prevMonthDay,
+.flatpickr-day.selected.nextMonthDay,
+.flatpickr-day.startRange.nextMonthDay,
+.flatpickr-day.endRange.nextMonthDay {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.flatpickr-day.today {
+    border-color: #2563eb;
+}
+
+.flatpickr-day.today:hover {
+    background: #2563eb;
+    color: white;
+}
+
+/* Сетка треков - один в строку */
+.tracks-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 20px;
+    width: 70%;
+}
+
+
+/* Центрирование кнопок в футере любого модального окна */
+.modal-footer {
+    justify-content: center !important;
+    gap: 12px !important;
+}
