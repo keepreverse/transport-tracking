@@ -71,7 +71,7 @@ export const getTransportName = (type) => {
         auto: 'Авто',
         train: 'ЖД',
         air: 'Авиа',
-        sea_rail: 'Море+ЖД'
+        sea_rail: 'Море + ЖД'
     };
     return names[type] || type;
 };

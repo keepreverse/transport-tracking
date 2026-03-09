@@ -1,17 +1,15 @@
-import React, { useState } from 'react'; // убрали useEffect
+import React, { useState } from 'react';
 import { transportConfig, getTransportIcon } from '../utils/config';
 import DatePickerFlatpickr from './DatePickerFlatpickr';
 
-const StatusTimeline = ({ track, onStatusChange, onPointClick }) => {
+const StatusTimeline = ({ track, onStatusChange, onPointClick, selectedPointIndex }) => {
     const config = transportConfig[track.transportType];
     const points = track.points;
     const intervals = config.intervals;
 
-    // Текущая позиция
     const pointIdx = points.findIndex(p => p.name === track.currentStatus);
     const interval = intervals.find(i => i.name === track.currentStatus);
 
-    // Расчёт процента заполнения для маркера
     let fillPercent = 0;
     let transportIconClass = getTransportIcon(track.transportType);
     if (pointIdx !== -1) {
@@ -24,7 +22,6 @@ const StatusTimeline = ({ track, onStatusChange, onPointClick }) => {
         transportIconClass = interval.transportIcon || getTransportIcon(track.transportType);
     }
 
-    // Определение пройденных точек
     const getCompletedPoints = () => {
         if (pointIdx !== -1) {
             return points.map((_, idx) => idx <= pointIdx);
@@ -42,19 +39,19 @@ const StatusTimeline = ({ track, onStatusChange, onPointClick }) => {
         onStatusChange(selectedStatus, dateInput);
     };
 
-    const isPointSelected = pointIdx !== -1;
+    const isSelectedPoint = points.some(p => p.name === selectedStatus);
 
-    // Сортируем опции: сначала точки по порядку, потом интервалы по from
     const sortedOptions = [
-        ...points.map(p => ({ type: 'point', name: p.name, order: points.indexOf(p) })),
+        ...points.map((p, idx) => ({ type: 'point', name: p.name, order: idx })),
         ...intervals.map(i => ({ type: 'interval', name: i.name, order: i.from }))
     ].sort((a, b) => a.order - b.order);
 
-    // Для корректировки позиции маркера (чтобы он не выходил за границы)
     const markerStyle = {
-        left: `calc(${fillPercent}% - 20px)` // 20px - половина ширины маркера (примерно)
+        left: `calc(44px + (${fillPercent} * (100% - 66px) / 100))`,
+        transform: 'translateX(-50%)',
+        transition: 'left 0.3s ease'
     };
-
+    
     return (
         <>
             <div className="progress-track">
@@ -65,10 +62,10 @@ const StatusTimeline = ({ track, onStatusChange, onPointClick }) => {
                     {points.map((point, idx) => (
                         <div
                             key={idx}
-                            className={`status-point ${completed[idx] ? 'completed' : ''} ${idx === pointIdx ? 'active' : ''}`}
+                            className={`status-point ${completed[idx] ? 'completed' : ''} ${idx === pointIdx ? 'active' : ''} ${idx === selectedPointIndex ? 'selected' : ''}`}
                             onClick={() => onPointClick(idx)}
                         >
-                            <span className="point-date">{point.date || point.name}</span>
+                            {point.date && <span className="point-date">{point.date}</span>}
                             <div className="point-icon">
                                 <i className={`fas ${point.icon}`}></i>
                             </div>
@@ -84,7 +81,7 @@ const StatusTimeline = ({ track, onStatusChange, onPointClick }) => {
             <div className="control-panel">
                 <div className="status-selector">
                     <div className="selector-item">
-                        <label>Текущий статус</label>
+                        <label>Новый статус</label>
                         <select
                             className="form-select"
                             value={selectedStatus}
@@ -92,11 +89,7 @@ const StatusTimeline = ({ track, onStatusChange, onPointClick }) => {
                                 const newVal = e.target.value;
                                 setSelectedStatus(newVal);
                                 const newPointIdx = points.findIndex(p => p.name === newVal);
-                                if (newPointIdx !== -1) {
-                                    setDateInput(points[newPointIdx].date);
-                                } else {
-                                    setDateInput('');
-                                }
+                                setDateInput(newPointIdx !== -1 ? points[newPointIdx].date : '');
                             }}
                         >
                             {sortedOptions.map(opt => (
@@ -104,7 +97,7 @@ const StatusTimeline = ({ track, onStatusChange, onPointClick }) => {
                             ))}
                         </select>
                     </div>
-                    <div className="selector-item" style={{ display: isPointSelected ? 'block' : 'none' }}>
+                    <div className="selector-item" style={{ display: isSelectedPoint ? 'block' : 'none' }}>
                         <label>Дата события</label>
                         <DatePickerFlatpickr
                             value={dateInput}

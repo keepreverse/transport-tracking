@@ -23,7 +23,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h5 className="modal-title">{title}</h5>
-                    <button className="btn-close" onClick={onClose}>&times;</button>
+                    <button className="btn-close" onClick={onClose}></button>
                 </div>
                 <div className="modal-body">
                     {children}

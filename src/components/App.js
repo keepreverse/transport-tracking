@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom'; // изменён импорт
 import FilterTabs from './FilterTabs';
 import TrackList from './TrackList';
 import TrackDetailPage from './TrackDetailPage';
 import CreateTrackModal from './CreateTrackModal';
 import { loadTracks, saveTracks, createTrack } from '../utils/storage';
+import { getProgressPercent } from '../utils/progress';
+import { deleteFilesFromDB } from '../utils/db';
 import '../styles/App.css';
 
 const AppContent = () => {
@@ -18,22 +20,6 @@ const AppContent = () => {
         setTracks(loadTracks());
     }, []);
 
-    const getProgressPercent = (track) => {
-        const config = require('../utils/config').transportConfig[track.transportType];
-        const points = track.points;
-        const pointIdx = points.findIndex(p => p.name === track.currentStatus);
-        const interval = config.intervals.find(i => i.name === track.currentStatus);
-        if (pointIdx !== -1) {
-            return (pointIdx / (points.length - 1)) * 100;
-        } else if (interval) {
-            const from = interval.from;
-            const to = interval.to;
-            const progress = track.intervalProgress || 50;
-            return ((from + (progress / 100) * (to - from)) / (points.length - 1)) * 100;
-        }
-        return 0;
-    };
-
     let filteredTracks = tracks.filter(track => {
         if (filter !== 'all' && track.transportType !== filter) return false;
         if (searchQuery && !track.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
@@ -42,7 +28,7 @@ const AppContent = () => {
 
     filteredTracks = filteredTracks.sort((a, b) => {
         if (sortBy === 'newest') {
-            return b.id.localeCompare(a.id);
+            return parseInt(b.id) - parseInt(a.id);
         } else if (sortBy === 'progress_asc') {
             return getProgressPercent(a) - getProgressPercent(b);
         } else if (sortBy === 'progress_desc') {
@@ -57,13 +43,45 @@ const AppContent = () => {
         setTracks(updated);
         saveTracks(updated);
         setIsCreateModalOpen(false);
-        // Убрали автоматический переход navigate(`/track/${newTrack.id}`);
     };
 
     const handleUpdateTrack = (updatedTrack) => {
         const updatedList = tracks.map(t => t.id === updatedTrack.id ? updatedTrack : t);
         setTracks(updatedList);
         saveTracks(updatedList);
+    };
+
+    const handleCopyTrack = (track) => {
+        const newTrack = {
+            ...track,
+            id: Date.now().toString(),
+            name: `${track.name} (копия)`
+        };
+        const updated = [newTrack, ...tracks];
+        setTracks(updated);
+        saveTracks(updated);
+    };
+
+    const handleDeleteTrack = async (id) => {
+        if (!window.confirm('Удалить перевозку?')) return;
+
+        const trackToDelete = tracks.find(t => t.id === id);
+        if (trackToDelete) {
+            const fileIds = trackToDelete.points.flatMap(point => 
+                point.files.map(file => file.id)
+            );
+            if (fileIds.length > 0) {
+                try {
+                    await deleteFilesFromDB(fileIds);
+                } catch (error) {
+                    console.error('Ошибка удаления файлов из БД:', error);
+                }
+            }
+        }
+
+        const updated = tracks.filter(t => t.id !== id);
+        setTracks(updated);
+        saveTracks(updated);
     };
 
     return (
@@ -74,7 +92,7 @@ const AppContent = () => {
                         <>
                             <div className="page-header">
                                 <h1><i className="fas fa-map-marked-alt me-2"></i>Мои перевозки</h1>
-                                <div className="filter-section">
+                                <div className="search-wrapper">
                                     <input
                                         type="text"
                                         className="search-input"
@@ -82,6 +100,8 @@ const AppContent = () => {
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                     />
+                                </div>
+                                <div className="action-bar">
                                     <FilterTabs currentFilter={filter} onFilterChange={setFilter} />
                                     <select
                                         className="sort-select"
@@ -100,13 +120,20 @@ const AppContent = () => {
                                     </button>
                                 </div>
                             </div>
-                            <TrackList tracks={filteredTracks} />
+                            <TrackList
+                                tracks={filteredTracks}
+                                onUpdateTrack={handleUpdateTrack}
+                                onCopyTrack={handleCopyTrack}
+                                onDeleteTrack={handleDeleteTrack}
+                            />
                         </>
                     } />
                     <Route path="/track/:id" element={
                         <TrackDetailPage
                             tracks={tracks}
                             onUpdateTrack={handleUpdateTrack}
+                            onDeleteTrack={handleDeleteTrack}
+                            onCopyTrack={handleCopyTrack}
                         />
                     } />
                 </Routes>
@@ -122,9 +149,9 @@ const AppContent = () => {
 };
 
 const App = () => (
-    <BrowserRouter>
+    <HashRouter> {/* заменён BrowserRouter */}
         <AppContent />
-    </BrowserRouter>
+    </HashRouter>
 );
 
 export default App;

@@ -5,7 +5,7 @@ const filters = [
     { value: 'auto', label: 'Авто', icon: 'fa-truck' },
     { value: 'train', label: 'ЖД', icon: 'fa-train' },
     { value: 'air', label: 'Авиа', icon: 'fa-plane' },
-    { value: 'sea_rail', label: 'Море+ЖД', icon: 'fa-ship' }
+    { value: 'sea_rail', label: 'Море + ЖД', icon: 'fa-ship' }
 ];
 
 const FilterTabs = ({ currentFilter, onFilterChange }) => {

@@ -8,6 +8,7 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: #f0f4f8;
     color: #1e293b;
+    line-height: 1.5;
 }
 
 .app-container {
@@ -17,54 +18,85 @@ body {
 
 .main-content {
     flex: 1;
-    padding: 32px 40px;
+    padding: clamp(1rem, 2vw, 2.5rem);        /* от 16px до 40px */
     background: #f8fafc;
     width: 100%;
 }
 
-/* Заголовок и фильтры */
+/* ===== ШАПКА (резиновая) ===== */
 .page-header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-    gap: 20px;
+    gap: clamp(0.5rem, 1vw, 1.25rem);         /* от 8px до 20px */
+    margin-bottom: clamp(1.25rem, 2vh, 2.5rem); /* от 20px до 40px */
 }
 
 .page-header h1 {
     font-weight: 700;
-    font-size: 2rem;
+    font-size: clamp(1.2rem, 1.8vw, 2.5rem);  /* ≈ от 19px до 48px, на 1920px = 2rem */
     color: #0f172a;
     margin: 0;
+    white-space: nowrap;
 }
 
-.filter-section {
+.search-wrapper {
     display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+}
+
+.search-wrapper .search-input {
+    width: 100%;
+    min-width: clamp(12.5rem, 13vw, 25rem);   /* от 200px до 400px */
+    max-width: 25rem;                          /* 400px */
+    padding: clamp(0.5rem, 0.8vw, 1rem);      /* от 8px до 16px */
+    border: 1px solid #ebedf1;
+    border-radius: 2.5rem;
+    font-size: clamp(0.85rem, 0.9vw, 1rem);   /* от 13.6px до 16px */
+    background: white;
+    transition: border 0.15s, box-shadow 0.15s;
+}
+
+.search-wrapper .search-input:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.action-bar {
+    display: flex;
+    gap: clamp(0.5rem, 0.8vw, 1rem);          /* от 8px до 16px */
     align-items: center;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
 }
 
 .filter-buttons {
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
+    gap: clamp(0.25rem, 0.5vw, 0.75rem);      /* от 4px до 12px */
+    flex-wrap: nowrap;
 }
 
 .filter-btn {
     background: #f1f5f9;
     border: none;
-    border-radius: 30px;
-    padding: 8px 16px;
-    font-size: 0.9rem;
+    border-radius: 1.875rem;
+    padding: clamp(0.375rem, 0.6vw, 0.75rem) clamp(0.5rem, 1vw, 1.25rem);
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
     font-weight: 500;
     color: #334155;
     cursor: pointer;
     transition: all 0.15s;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: clamp(0.25rem, 0.4vw, 0.5rem);       /* от 4px до 8px */
+    white-space: nowrap;
+}
+
+.filter-btn i {
+    font-size: clamp(0.9rem, 1.1vw, 1.2rem);  /* от 14.4px до 19.2px */
 }
 
 .filter-btn.active {
@@ -72,21 +104,18 @@ body {
     color: white;
 }
 
-.filter-btn i {
-    font-size: 1rem;
-}
-
-.search-input {
-    padding: 10px 18px;
-    border: 1px solid #e2e8f0;
-    border-radius: 40px;
-    font-size: 0.95rem;
+.sort-select {
+    padding: clamp(0.375rem, 0.6vw, 0.75rem) clamp(0.5rem, 1vw, 1.25rem);
+    border-radius: 2.5rem;
+    border: 1px solid #ebedf1;
     background: white;
-    width: 400px;
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
+    cursor: pointer;
+    white-space: nowrap;
     transition: border 0.15s;
 }
 
-.search-input:focus {
+.sort-select:focus {
     outline: none;
     border-color: #2563eb;
 }
@@ -94,56 +123,102 @@ body {
 .btn-create {
     background: #2563eb;
     border: none;
-    border-radius: 40px;
-    padding: 10px 24px;
+    border-radius: 2.5rem;
+    padding: clamp(0.375rem, 0.6vw, 0.75rem) clamp(0.5rem, 1vw, 1.25rem);
     font-weight: 600;
     color: white;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: clamp(0.25rem, 0.5vw, 0.75rem);      /* от 4px до 12px */
     transition: background 0.2s;
+    white-space: nowrap;
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
 }
 
 .btn-create:hover {
     background: #1d4ed8;
 }
 
+/* Структурные медиа-запросы (скрытие / перенос) */
+@media (max-width: 1500px) {
+    .filter-btn {
+        font-size: 0;               /* текст скрыт, иконки остаются */
+        gap: 0;
+    }
+    .filter-btn i {
+        font-size: clamp(1rem, 1.3vw, 1.4rem);
+    }
+}
 
+@media (max-width: 1100px) {
+    .page-header h1 {
+        display: none;
+    }
+    .search-wrapper .search-input {
+        min-width: clamp(20rem, 30vw, 40rem);
+    }
+}
+
+@media (max-width: 930px) {
+    .page-header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: clamp(0.5rem, 1vw, 1rem);
+    }
+    .search-wrapper {
+        width: 100%;
+    }
+    .search-wrapper .search-input {
+        max-width: none;
+        min-width: auto;
+    }
+    .action-bar {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: clamp(0.375rem, 0.8vw, 0.75rem);
+    }
+    .filter-buttons {
+        gap: clamp(0.25rem, 0.5vw, 0.5rem);
+    }
+}
+
+/* ===== Остальные стили (резиновые) ===== */
 .track-card {
     background: white;
-    border-radius: 24px;
-    padding: 20px;
+    border-radius: clamp(1rem, 1.5vw, 2rem);       /* от 16px до 32px */
+    padding: clamp(1rem, 1.5vw, 2rem);             /* от 16px до 32px */
     border: 1px solid #eef2f6;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    box-shadow: 0 clamp(0.125rem, 0.25vw, 0.5rem) clamp(0.375rem, 0.75vw, 1rem) rgba(0,0,0,0.02);
     transition: all 0.2s;
     cursor: pointer;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: clamp(0.5rem, 0.75vw, 1rem);              /* от 8px до 16px */
 }
 
 .track-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+    transform: translateY(clamp(-0.125rem, -0.25vw, -0.5rem));
+    box-shadow: 0 clamp(0.375rem, 0.75vw, 1rem) clamp(0.75rem, 1.5vw, 2rem) rgba(0,0,0,0.06);
     border-color: #cbd5e1;
 }
 
 .track-card-header {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: clamp(0.5rem, 0.75vw, 1rem);
 }
 
 .track-card-header i {
-    font-size: 2rem;
+    font-size: clamp(1.2rem, 1.8vw, 2rem);
     color: #2563eb;
-    width: 40px;
+    width: clamp(1.5rem, 2vw, 2.5rem);
     text-align: center;
 }
 
 .track-card-header h3 {
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 1.2vw, 1.5rem);
     margin: 0;
     color: #0f172a;
     flex: 1;
@@ -152,54 +227,103 @@ body {
 .track-card-body {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: clamp(0.375rem, 0.5vw, 0.75rem);
 }
 
 .track-status {
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
     color: #475569;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: clamp(0.25rem, 0.4vw, 0.5rem);
 }
 
 .track-status i {
     color: #2563eb;
-    font-size: 0.9rem;
+    font-size: clamp(0.7rem, 0.8vw, 0.9rem);
 }
 
 .track-date {
-    font-size: 0.8rem;
+    font-size: clamp(0.7rem, 0.8vw, 0.9rem);
     color: #94a3b8;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: clamp(0.25rem, 0.4vw, 0.5rem);
 }
 
-/* Прогресс-бар в карточке */
-.track-progress {
-    height: 6px;
-    background: #e2e8f0;
-    border-radius: 20px;
-    margin: 8px 0 4px;
-    overflow: hidden;
+.track-mini-timeline {
+    position: relative;
+    margin-top: clamp(0.75rem, 1vh, 1.25rem);
+    padding: clamp(0.25rem, 0.4vh, 0.5rem) 0;
+    min-height: clamp(3rem, 5vh, 4rem);
 }
 
-.track-progress-fill {
+.mini-progress-line {
+    height: clamp(0.2rem, 0.3vh, 0.35rem);
+    background: #ebedf1;
+    border-radius: 0.25rem;
+    position: relative;
+    margin: 0 clamp(1rem, 1.5vw, 2rem);
+}
+
+.mini-progress-fill {
     height: 100%;
     background: #2563eb;
-    border-radius: 20px;
-    width: 0%;
+    border-radius: 0.25rem;
     transition: width 0.2s;
 }
 
+.mini-points-with-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: clamp(-1.5rem, -2vh, -1rem);
+    position: relative;
+    z-index: 2;
+}
+
+.mini-point-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: clamp(2rem, 4vmin, 2.5rem);           /* от 32px до 40px */
+}
+
+.mini-point-icon {
+    width: clamp(2rem, 4vmin, 2.5rem);
+    height: clamp(2rem, 4vmin, 2.5rem);
+    background: white;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: clamp(0.8rem, 1.5vmin, 1rem);
+    color: #475569;
+    z-index: 2;
+}
+
+.mini-point-container.completed .mini-point-icon {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+.mini-point-label {
+    font-size: clamp(0.7rem, 1.2vmin, 0.8rem);
+    color: #334155;
+    margin-top: 0.25rem;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Модальные окна */
 .modal-header {
     border-bottom: 2px solid #f1f5f9;
-    padding: 20px 28px;
+    padding: clamp(1rem, 1.5vw, 2rem) clamp(1.5rem, 2.5vw, 3rem);
 }
 
 .modal-body {
-    padding: 28px;
+    padding: clamp(1.5rem, 2.5vw, 3rem);
 }
 
 .modal-overlay {
@@ -218,121 +342,198 @@ body {
 
 .modal-content {
     background: white;
-    border-radius: 28px;
-    max-width: 800px; /* ограничим ширину */
+    border-radius: clamp(1.5rem, 2.5vw, 3rem);
+    max-width: 50rem;
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    box-shadow: 0 clamp(1rem, 2vh, 2rem) clamp(2rem, 4vh, 3rem) clamp(-0.75rem, -1vh, -0.5rem) rgba(0,0,0,0.25);
+}
+
+.modal-footer {
+    justify-content: center !important;
+    gap: clamp(0.5rem, 0.8vw, 1rem) !important;
+    padding: clamp(1rem, 1.5vw, 2rem) clamp(1.5rem, 2.5vw, 3rem);
+    border-top: 2px solid #f1f5f9;
+}
+
+/* Транспортный маркер */
+.transport-marker {
+    position: absolute;
+    top: clamp(-2.5rem, -4vh, -1.5rem);
+    left: 0;
+    transform: translateX(-50%);
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    color: #1e293b;
+    filter: drop-shadow(0 clamp(0.125rem, 0.25vh, 0.25rem) clamp(0.25rem, 0.5vh, 0.5rem) rgba(0,0,0,0.1));
+    transition: left 0.2s ease;
+    z-index: 10;
+    pointer-events: none;
+    will-change: left;
 }
 
 .transport-options {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: clamp(0.75rem, 1vw, 1.25rem);
 }
 
 .transport-option {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: clamp(0.25rem, 0.4vw, 0.5rem);
     background: #f1f5f9;
-    padding: 8px 16px;
-    border-radius: 40px;
+    padding: clamp(0.375rem, 0.6vw, 0.75rem) clamp(0.75rem, 1.2vw, 1.5rem);
+    border-radius: 2.5rem;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
 }
 
 .transport-option input {
-    margin-right: 4px;
+    margin-right: 0.25rem;
 }
 
+/* Прогресс трек */
+.progress-track {
+    position: relative;
+    margin: clamp(3rem, 5vh, 5rem) auto clamp(2rem, 3vh, 3rem);
+    max-width: 90%;
+    height: clamp(5rem, 8vh, 7rem);
+}
 
+.progress-line {
+    position: absolute;
+    left: clamp(1.25rem, 1.5vw, 2rem);
+    right: clamp(1.25rem, 1.5vw, 2rem);
+    top: 50%;
+    height: clamp(0.25rem, 0.4vh, 0.35rem);
+    background: #ebedf1;
+    border-radius: 0.25rem;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+/* Контейнер точек */
+.points-container {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 clamp(1.25rem, 1.5vw, 2rem);
+    box-sizing: border-box;
+    z-index: 2;
+    margin-right: clamp(-1.25rem, -1.5vw, -2rem);
+    align-items: center;
+}
+
+/* Точка статуса */
 .status-point {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    width: 80px;
+    width: clamp(2.5rem, 4vmin, 3rem);
     cursor: pointer;
-    z-index: 5;
+    z-index: 3;
 }
 
+/* Дата */
 .point-date {
-    font-size: 0.7rem;
+    position: absolute;
+    bottom: calc(50% + clamp(1.5rem, 2vmin, 2rem));
+    font-size: clamp(0.7rem, 1.2vmin, 0.8rem);
     color: #64748b;
     font-style: italic;
-    margin-bottom: 4px;
     white-space: nowrap;
     background: white;
-    padding: 2px 8px;
-    border-radius: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    max-width: 90px;
+    padding: 0.125rem 0.5rem;
+    border-radius: 1.25rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.02);
+    max-width: clamp(5rem, 8vw, 6rem);
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+/* Иконка статуса */
 .point-icon {
-    width: 44px;
-    height: 44px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(2.5rem, 4vmin, 3rem);
+    height: clamp(2.5rem, 4vmin, 3rem);
     background: white;
-    border: 2px solid #e2e8f0;
+    border: 2px solid #ebedf1;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 1.5vmin, 1.3rem);
     color: #334155;
-    margin-bottom: 6px;
-    transition: all 0.15s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.03);
+    box-shadow: 0 clamp(0.125rem, 0.25vh, 0.25rem) clamp(0.25rem, 0.5vh, 0.5rem) rgba(0,0,0,0.03);
 }
 
 .status-point.active .point-icon {
     border-color: #2563eb;
     background: #eff6ff;
     color: #2563eb;
-    transform: scale(1.05);
-    box-shadow: 0 6px 12px rgba(37,99,235,0.15);
+    transform: translateY(-50%) scale(1.05);
+    box-shadow: 0 clamp(0.25rem, 0.5vh, 0.5rem) clamp(0.5rem, 1vh, 0.75rem) rgba(37,99,235,0.15);
 }
 
+.status-point.completed .point-icon {
+    background: #dcfce7;
+    border-color: #22c55e;
+    color: #166534;
+}
+
+.status-point.selected .point-icon {
+    border-color: #2563eb;
+    background: #eff6ff;
+    color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+}
+
+/* Подпись статуса */
 .point-label {
+    margin-top: clamp(4.5rem, 4vmin, 4.5rem);
     font-weight: 600;
-    font-size: 0.75rem;
+    font-size: clamp(0.7rem, 1.2vmin, 0.8rem);
     color: #334155;
-    max-width: 80px;
     line-height: 1.3;
     text-transform: uppercase;
     letter-spacing: 0.3px;
 }
 
+/* Панель управления */
 .control-panel {
     background: white;
-    border-radius: 28px;
-    padding: 28px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.05);
-    margin: 30px 0 20px;
+    border-radius: clamp(1.5rem, 2.5vw, 3rem);
+    padding: clamp(1.5rem, 2.5vw, 3rem);
+    box-shadow: 0 clamp(0.5rem, 1vh, 1rem) clamp(1rem, 2vh, 2rem) rgba(0,0,0,0.05);
+    margin: clamp(1.5rem, 2vh, 2.5rem) 0 clamp(1rem, 1.5vh, 2rem);
     border: 1px solid #edf2f7;
 }
 
 .status-selector {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: clamp(1rem, 1.5vw, 2rem);
     align-items: flex-end;
 }
 
 .selector-item {
-    flex: 1 1 220px;
+    flex: 1 1 clamp(12rem, 20vw, 15rem);
 }
 
 .selector-item label {
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: clamp(0.75rem, 0.8vw, 0.9rem);
     color: #475569;
-    margin-bottom: 6px;
+    margin-bottom: 0.375rem;
     display: block;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -340,12 +541,14 @@ body {
 
 .selector-item .form-select,
 .selector-item .form-control {
-    border-radius: 20px;
-    border: 2px solid #e2e8f0;
-    padding: 12px 18px;
+    border-radius: 1.25rem;
+    border: 2px solid #ebedf1;
+    padding: clamp(0.5rem, 0.8vw, 1rem) clamp(0.75rem, 1vw, 1.25rem);
     font-weight: 500;
     background: #f9fcff;
     transition: border 0.15s;
+    width: 100%;
+    font-size: clamp(0.85rem, 0.9vw, 1rem);
 }
 
 .selector-item .form-select:focus,
@@ -358,76 +561,158 @@ body {
 .btn-update {
     background: #2563eb;
     border: none;
-    border-radius: 40px;
-    padding: 12px 32px;
+    border-radius: 2.5rem;
+    padding: clamp(0.5rem, 0.8vw, 1rem) clamp(1.5rem, 2vw, 2.5rem);
     font-weight: 600;
     color: white;
     transition: background 0.15s;
     width: 100%;
+    font-size: clamp(0.85rem, 0.9vw, 1rem);
 }
 
 .btn-update:hover {
     background: #1d4ed8;
 }
 
-.files-section {
+/* Панель деталей точки */
+.point-details-panel {
     background: white;
-    border-radius: 24px;
-    padding: 24px;
-    margin-top: 20px;
+    border-radius: clamp(1.25rem, 1.8vw, 2rem);
+    padding: clamp(1.25rem, 1.8vw, 2rem);
+    margin-top: clamp(1rem, 1.5vh, 2rem);
     border: 1px solid #edf2f7;
 }
 
-.files-header {
+.point-details-panel .panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 18px;
-    flex-wrap: wrap;
-    gap: 12px;
+    margin-bottom: clamp(1rem, 1.5vh, 2rem);
 }
 
-.files-header h5 {
-    margin: 0;
+.point-details-panel h4 {
+    margin-bottom: 0;
     font-weight: 600;
-    color: #0f172a;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: clamp(1rem, 1.2vw, 1.3rem);
 }
 
-.btn-upload {
-    background: #059669;
-    border: none;
-    border-radius: 40px;
-    padding: 10px 22px;
+.point-details-panel .btn-edit {
+    background: none;
+    border: 2px solid #2563eb;
+    border-radius: 1.875rem;
+    padding: clamp(0.25rem, 0.4vw, 0.5rem) clamp(0.75rem, 1vw, 1.25rem);
+    color: #2563eb;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: clamp(0.75rem, 0.8vw, 0.9rem);
+}
+
+.point-details-panel .btn-edit:hover {
+    background: #2563eb;
     color: white;
+}
+
+.point-details-panel .edit-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.point-details-panel .btn-save,
+.point-details-panel .btn-cancel {
+    background: none;
+    border: 2px solid;
+    border-radius: 1.875rem;
+    padding: clamp(0.25rem, 0.4vw, 0.5rem) clamp(0.75rem, 1vw, 1.25rem);
     font-weight: 600;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.15s;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: clamp(0.75rem, 0.8vw, 0.9rem);
 }
 
-.btn-upload:hover {
-    background: #047857;
+.point-details-panel .btn-save {
+    border-color: #059669;
+    color: #059669;
 }
 
+.point-details-panel .btn-save:hover {
+    background: #059669;
+    color: white;
+}
+
+.point-details-panel .btn-cancel {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.point-details-panel .btn-cancel:hover {
+    background: #ef4444;
+    color: white;
+}
+
+.point-details-placeholder {
+    background: white;
+    border-radius: 1.5rem;
+    padding: clamp(2rem, 3vh, 3rem);
+    text-align: center;
+    color: #94a3b8;
+    font-style: italic;
+    margin-top: 1.25rem;
+}
+
+.detail-row {
+    margin-bottom: clamp(1rem, 1.5vh, 2rem);
+}
+
+.detail-row label {
+    display: block;
+    font-weight: 600;
+    font-size: clamp(0.75rem, 0.8vw, 0.9rem);
+    color: #475569;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-row textarea {
+    width: 100%;
+    padding: clamp(0.5rem, 0.8vw, 1rem);
+    border: 2px solid #ebedf1;
+    border-radius: 1rem;
+    font-size: clamp(0.85rem, 0.9vw, 1rem);
+    resize: vertical;
+}
+
+.detail-row textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+.view-mode .detail-value {
+    background: #f1f5f9;
+    padding: clamp(0.5rem, 0.8vw, 1rem) clamp(0.75rem, 1vw, 1.25rem);
+    border-radius: 1rem;
+    font-size: clamp(0.85rem, 0.9vw, 1rem);
+    color: #1e293b;
+}
+
+/* Файлы */
+/* Файлы */
 .file-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: clamp(0.5rem, 0.8vw, 1rem);
+    margin-top: 0.75rem;
 }
 
 .file-item {
     background: #f8fafc;
-    border-radius: 16px;
-    padding: 12px 18px;
+    border-radius: 0.75rem;
+    padding: clamp(0.5rem, 0.8vw, 1rem) clamp(0.75rem, 1vw, 1.25rem);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #ebedf1;
     transition: background 0.1s;
 }
 
@@ -438,12 +723,13 @@ body {
 .file-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0.75rem;
     overflow: hidden;
+    flex: 1;
 }
 
 .file-info i {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 1.5vw, 1.5rem);
     color: #2563eb;
 }
 
@@ -452,22 +738,39 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 250px;
+    max-width: clamp(15rem, 25vw, 30rem); /* увеличено */
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
 }
 
-.btn-download {
+.file-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.btn-download,
+.btn-delete-file {
     background: none;
-    border: 2px solid #2563eb;
-    border-radius: 30px;
-    padding: 5px 16px;
-    color: #2563eb;
+    border: 2px solid;
+    border-radius: 1.875rem;
+    padding: 0.25rem 1rem;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: clamp(0.7rem, 0.8vw, 0.9rem);
     transition: all 0.15s;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    gap: 0.25rem;
+    cursor: pointer;
+}
+
+.btn-download {
+    border: 2px solid #2563eb;
+}
+
+
+.btn-delete-file {
+    border: 2px solid #ef4444;
 }
 
 .btn-download:hover {
@@ -475,410 +778,227 @@ body {
     color: white;
 }
 
+.btn-delete-file {
+    background: none;
+    border-radius: 1.875rem;
+    padding: 0.25rem 1rem;
+    color: #ef4444;
+    font-weight: 600;
+    font-size: clamp(0.7rem, 0.8vw, 0.9rem);
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.btn-delete-file:hover {
+    background: #ef4444;
+    color: white;
+}
+
 .empty-files {
     color: #94a3b8;
     font-style: italic;
-    padding: 24px;
+    padding: 1.5rem;
     text-align: center;
     background: #f8fafc;
-    border-radius: 16px;
+    border-radius: 1rem;
 }
 
-.status-detail-info {
-    margin-bottom: 24px;
-}
-
-.status-detail-info h6 {
+.btn-upload {
+    background: #059669;
+    border: none;
+    border-radius: 2.5rem;
+    padding: clamp(0.5rem, 0.8vw, 1rem) clamp(1rem, 1.5vw, 2rem);
+    color: white;
     font-weight: 600;
-    color: #0f172a;
-    margin-bottom: 12px;
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.15s;
 }
 
-.comment-input {
-    width: 100%;
-    padding: 14px 18px;
-    border: 2px solid #e2e8f0;
-    border-radius: 20px;
-    font-size: 0.95rem;
-    resize: vertical;
-    min-height: 80px;
-    background: #f9fcff;
+.btn-upload:hover {
+    background: #047857;
 }
 
-.comment-input:focus {
-    outline: none;
-    border-color: #2563eb;
-    background: white;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .main-content {
-        padding: 20px;
-    }
-    .page-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .filter-section {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .search-input {
-        width: 100%;
-    }
-}
-
-.track-mini-timeline {
-    position: relative;
-    margin-top: 10px;
-    padding: 5px 0;
-}
-
-.mini-progress-line {
-    height: 3px;
-    background: #e2e8f0;
-    border-radius: 3px;
-    position: relative;
-    margin: 0 5px;
-}
-
-.mini-progress-fill {
-    height: 100%;
-    background: #2563eb;
-    border-radius: 3px;
-    transition: width 0.2s;
-}
-
-.mini-points {
-    position: relative;
+/* Карточка с меню */
+.track-card-wrapper {
     display: flex;
-    justify-content: space-between;
-    margin-top: -12px;
-    padding: 0 2px;
+    align-items: center;
+    gap: clamp(0.5rem, 0.8vw, 1rem);
+    background: white;
+    border-radius: clamp(1rem, 1.5vw, 2rem);
+    border: 1px solid #eef2f6;
+    box-shadow: 0 clamp(0.125rem, 0.25vw, 0.5rem) clamp(0.375rem, 0.75vw, 1rem) rgba(0,0,0,0.02);
+    transition: all 0.2s;
 }
 
-.mini-point {
-    width: 20px;
-    height: 20px;
-    background: white;
-    border: 2px solid #cbd5e1;
+.track-card-wrapper:hover {
+    box-shadow: 0 clamp(0.375rem, 0.75vw, 1rem) clamp(0.75rem, 1.5vw, 2rem) rgba(0,0,0,0.06);
+    border-color: #cbd5e1;
+}
+
+.track-card-wrapper .track-card {
+    flex: 1;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+.track-card-wrapper .track-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: transparent;
+}
+
+.track-menu {
+    position: relative;
+    margin-right: clamp(0.75rem, 1vw, 1.25rem);
+}
+
+.menu-trigger {
+    background: none;
+    border: none;
+    font-size: clamp(1rem, 1.2vw, 1.5rem);
+    color: #64748b;
+    cursor: pointer;
+    padding: clamp(0.375rem, 0.6vw, 0.75rem);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.7rem;
-    color: #475569;
-    z-index: 2;
+    transition: background 0.2s;
 }
 
-.mini-point i {
-    font-size: 0.7rem;
+.menu-trigger:hover {
+    background: #f1f5f9;
+    color: #2563eb;
+}
+
+.menu-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 clamp(0.5rem, 1vh, 1rem) clamp(1rem, 2vh, 1.5rem) rgba(0,0,0,0.1);
+    border: 1px solid #ebedf1;
+    z-index: 20;
+    min-width: 9rem;
+}
+
+.menu-dropdown button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: clamp(0.5rem, 0.8vw, 1rem) clamp(0.75rem, 1vw, 1.25rem);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: clamp(0.8rem, 0.9vw, 1rem);
+    color: #334155;
+    transition: background 0.1s;
+}
+
+.menu-dropdown button:hover {
+    background: #f1f5f9;
+    color: #2563eb;
+}
+
+/* Детальная страница */
+.detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .btn-back {
     background: none;
     border: none;
     color: #2563eb;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1vw, 1.2rem);
     font-weight: 500;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 0;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
 }
 
 .btn-back:hover {
     color: #1d4ed8;
 }
 
-.track-detail-page {
-    padding: 20px 0;
+.track-header {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 1.2vw, 1.5rem);
+    margin-bottom: clamp(1rem, 1.5vh, 2rem);
+    margin-top: clamp(1rem, 1.5vh, 2rem);
 }
 
-
-/* Завершённые точки */
-.point-icon.completed {
-    background: #d1fae5;
-    border-color: #10b981;
-    color: #065f46;
+.track-header h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: clamp(1.4rem, 2vw, 2.2rem);
 }
 
+.transport-badge {
+    background: #ebedf1;
+    border-radius: 41.25rem;
+    padding: clamp(0.25rem, 0.4vw, 0.5rem) clamp(0.75rem, 1vw, 1.25rem);
+    font-weight: 600;
+    font-size: clamp(0.85rem, 0.9vw, 1.1rem);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+}
 
-/* Стили для кастомного селекта */
-.custom-select {
-    appearance: none;
-    background: white url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 1rem center;
-    background-size: 16px;
-    border: 2px solid #e2e8f0;
-    border-radius: 20px;
-    padding: 12px 18px;
-    font-weight: 500;
+.tracks-grid {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 1vw, 1.5rem);
+    margin: clamp(1rem, 2vh, 2rem) auto 0;
     width: 100%;
-    cursor: pointer;
+    max-width: 75rem;
 }
 
-.custom-select:focus {
-    border-color: #2563eb;
+.title-edit {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.title-edit input {
+    padding: 0.5rem 0.75rem;
+    border: 2px solid #2563eb;
+    border-radius: 1.25rem;
+    font-size: clamp(1rem, 1.2vw, 1.5rem);
+    font-weight: 600;
     outline: none;
 }
 
-/* Кнопка сортировки */
-.sort-btn {
-    background: #f1f5f9;
+.title-edit button {
+    background: none;
     border: none;
-    border-radius: 30px;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #334155;
+    font-size: clamp(1rem, 1.2vw, 1.5rem);
     cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    color: #2563eb;
 }
 
-.sort-btn.active {
-    background: #2563eb;
-    color: white;
+.title-edit button:hover {
+    color: #1d4ed8;
 }
 
-
-.track-card {
-    width: 100%;
-    /* остальное без изменений */
-}
-
-/* Мини-шкала на карточке */
-.track-mini-timeline {
-    position: relative;
-    margin-top: 15px;
-    padding: 5px 0;
-}
-
-.mini-progress-line {
-    height: 4px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    position: relative;
-    margin: 0 10px;
-}
-
-.mini-progress-fill {
-    height: 100%;
-    background: #2563eb;
-    border-radius: 4px;
-    transition: width 0.2s;
-}
-
-.mini-points {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    margin-top: -16px;
-    padding: 0 5px;
-}
-
-.mini-point {
-    width: 28px;
-    height: 28px;
-    background: white;
-    border: 2px solid #cbd5e1;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    color: #475569;
-    z-index: 2;
-}
-
-
-/* Стили для flatpickr в соответствии с дизайном */
+/* Flatpickr */
 .flatpickr-calendar {
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 30px -10px rgba(0,0,0,0.15);
-    border: 1px solid #e2e8f0;
-    font-family: inherit;
-}
-
-.flatpickr-day.selected, 
-.flatpickr-day.startRange, 
-.flatpickr-day.endRange, 
-.flatpickr-day.selected.inRange, 
-.flatpickr-day.startRange.inRange, 
-.flatpickr-day.endRange.inRange, 
-.flatpickr-day.selected:focus, 
-.flatpickr-day.startRange:focus, 
-.flatpickr-day.endRange:focus, 
-.flatpickr-day.selected:hover, 
-.flatpickr-day.startRange:hover, 
-.flatpickr-day.endRange:hover {
-    background: #2563eb;
-    border-color: #2563eb;
-}
-
-.flatpickr-day.today {
-    border-color: #2563eb;
-}
-
-.flatpickr-day.today:hover {
-    background: #2563eb;
-    color: white;
-}
-
-.flatpickr-months .flatpickr-prev-month:hover svg,
-.flatpickr-months .flatpickr-next-month:hover svg {
-    fill: #2563eb;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-/* Вставьте в конец файла или замените соответствующие блоки */
-
-.progress-track {
-    position: relative;
-    margin: 60px 0 40px;
-}
-
-.timeline-inner {
-    position: relative;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-.progress-line {
-    position: relative;
-    height: 4px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    width: 100%;
-}
-
-.progress-fill {
-    position: absolute;
-    height: 100%;
-    background: #2563eb;
-    border-radius: 4px;
-    width: 0%;
-    transition: width 0.2s ease;
-}
-
-.transport-marker {
-    position: absolute;
-    top: -60px;
-    left: 0;
-    transform: translateX(-50%);
-    font-size: 1.8rem;
-    color: #1e293b;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-    transition: left 0.2s ease;
-    z-index: 10;
-    pointer-events: none;
-}
-
-/* Пройденные точки */
-.status-point.completed .point-icon {
-    background: #dcfce7;
-    border-color: #22c55e;
-    color: #166534;
-}
-
-.mini-point.completed {
-    background: #dcfce7;
-    border-color: #22c55e;
-    color: #166534;
-}
-
-/* Контейнер точек - чтобы иконки были на линии */
-.points-container {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    margin-top: -22px; /* центр иконки на линии */
-    padding: 0 10px;
-}
-
-/* Сортировка */
-.sort-select {
-    padding: 8px 16px;
-    border-radius: 40px;
-    border: 1px solid #e2e8f0;
-    background: white;
-    font-size: 0.9rem;
-    cursor: pointer;
-}
-
-/* Сетка треков - один в строку */
-.tracks-grid {
-    grid-template-columns: 1fr;
-}
-
-@media (max-width: 768px) {
-    .filter-section {
-        flex-wrap: wrap;
-    }
-    .sort-select {
-        width: 100%;
-    }
-}
-
-
-
-
-
-
-
-/* Транспортный маркер: чёрный, над линией, с коррекцией позиции */
-.transport-marker {
-    position: absolute;
-    top: -60px;
-    left: 0;
-    transform: translateX(-50%);
-    font-size: 2rem;
-    color: #1e293b; /* чёрный */
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-    transition: left 0.2s ease;
-    z-index: 10;
-    pointer-events: none;
-    will-change: left;
-}
-
-/* Точки на линии */
-.points-container {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    margin-top: -30px; /* центр иконки на линии */
-    padding: 0 10px;
-}
-
-/* Прогресс-линия */
-.progress-line {
-    position: relative;
-    height: 4px;
-    background: #e2e8f0;
-    border-radius: 4px;
-    margin: 0 30px;
-}
-
-/* Стили для календаря flatpickr – светлая тема */
-.flatpickr-calendar {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid #ebedf1;
+    border-radius: 1.25rem;
+    box-shadow: 0 clamp(0.5rem, 1vh, 1rem) clamp(1rem, 2vh, 1.5rem) rgba(0,0,0,0.1);
     font-family: inherit;
 }
 
@@ -913,18 +1033,133 @@ body {
     color: white;
 }
 
-/* Сетка треков - один в строку */
-.tracks-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 20px;
-    width: 70%;
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+    fill: #2563eb;
 }
 
 
-/* Центрирование кнопок в футере любого модального окна */
-.modal-footer {
-    justify-content: center !important;
-    gap: 12px !important;
+
+
+
+
+
+
+
+
+
+
+
+/* Стили для предпросмотра */
+.preview-modal {
+    width: 90vw;
+    max-width: 1200px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-body {
+    flex: 1;
+    overflow: auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.preview-audio {
+    width: 100%;
+    max-width: 500px;
+}
+
+.preview-video {
+    max-width: 100%;
+    max-height: 70vh;
+}
+
+.preview-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.preview-unsupported {
+    text-align: center;
+    color: #475569;
+}
+
+.text-preview {
+    background: white;
+    color: black;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
+
+.office-preview {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: white;
+    padding: 1rem;
+}
+
+.office-preview table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.office-preview th,
+.office-preview td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.office-preview th {
+    background-color: #f2f2f2;
+}
+
+.preview-loading,
+.preview-error {
+    text-align: center;
+    padding: 2rem;
+    color: #64748b;
+}
+
+.btn-view {
+    background: none;
+    border: 2px solid #2563eb;
+    border-radius: 1.875rem;
+    padding: 0.25rem 1rem;
+    color: #2563eb;
+    font-weight: 600;
+    font-size: clamp(0.7rem, 0.8vw, 0.9rem);
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+}
+
+.btn-view:hover {
+    background: #2563eb;
+    color: white;
 }

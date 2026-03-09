@@ -11,7 +11,7 @@ const CreateTrackModal = ({ isOpen, onClose, onCreate }) => {
         onCreate(name.trim(), type);
         setName('');
         setType('auto');
-        onClose(); // просто закрываем, без перехода
+        onClose();
     };
 
     return (
@@ -32,46 +32,19 @@ const CreateTrackModal = ({ isOpen, onClose, onCreate }) => {
                 <div className="mb-3">
                     <label className="form-label">Вид транспорта</label>
                     <div className="transport-options">
-                        <label className="transport-option">
-                            <input
-                                type="radio"
-                                name="transportType"
-                                value="auto"
-                                checked={type === 'auto'}
-                                onChange={(e) => setType(e.target.value)}
-                            />
-                            <i className="fas fa-truck"></i> Авто
-                        </label>
-                        <label className="transport-option">
-                            <input
-                                type="radio"
-                                name="transportType"
-                                value="train"
-                                checked={type === 'train'}
-                                onChange={(e) => setType(e.target.value)}
-                            />
-                            <i className="fas fa-train"></i> ЖД
-                        </label>
-                        <label className="transport-option">
-                            <input
-                                type="radio"
-                                name="transportType"
-                                value="air"
-                                checked={type === 'air'}
-                                onChange={(e) => setType(e.target.value)}
-                            />
-                            <i className="fas fa-plane"></i> Авиа
-                        </label>
-                        <label className="transport-option">
-                            <input
-                                type="radio"
-                                name="transportType"
-                                value="sea_rail"
-                                checked={type === 'sea_rail'}
-                                onChange={(e) => setType(e.target.value)}
-                            />
-                            <i className="fas fa-ship"></i> + <i className="fas fa-train"></i> Море+ЖД
-                        </label>
+                        {['auto', 'train', 'air', 'sea_rail'].map(t => (
+                            <label key={t} className="transport-option">
+                                <input
+                                    type="radio"
+                                    name="transportType"
+                                    value={t}
+                                    checked={type === t}
+                                    onChange={(e) => setType(e.target.value)}
+                                />
+                                <i className={`fas ${t === 'auto' ? 'fa-truck' : t === 'train' ? 'fa-train' : t === 'air' ? 'fa-plane' : 'fa-ship'}`}></i>
+                                {t === 'auto' ? 'Авто' : t === 'train' ? 'ЖД' : t === 'air' ? 'Авиа' : 'Море + ЖД'}
+                            </label>
+                        ))}
                     </div>
                 </div>
                 <div className="modal-footer">

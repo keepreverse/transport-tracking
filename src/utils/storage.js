@@ -11,13 +11,14 @@ export const saveTracks = (tracks) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(tracks));
 };
 
+// storage.js
 export const createTrack = (name, type) => {
     const config = transportConfig[type];
     const points = config.points.map(p => ({
         name: p.name,
         icon: p.icon,
         date: '',
-        files: [],
+        files: [], // теперь здесь будут храниться только метаданные: [{ id, name, size, type }]
         comment: ''
     }));
     return {
