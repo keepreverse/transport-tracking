@@ -5,12 +5,15 @@ import PointDetailsPanel from './PointDetailsPanel';
 import TrackMenu from './TrackMenu';
 import CopyTrackModal from './CopyTrackModal';
 import { getTransportIcon, getTransportName } from '../utils/config';
-import { saveFileToDB, deleteFileFromDB } from '../utils/db';
+import { transportConfig } from '../utils/config'; // для проверки интервалов
+import { api } from '../api';
 
-const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) => {
+const TrackDetailPage = ({ onRefresh }) => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const track = tracks.find(t => t.id === id);
+    const [track, setTrack] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const [selectedPointName, setSelectedPointName] = useState(null);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
@@ -18,10 +21,21 @@ const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) 
     const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
 
     useEffect(() => {
-        if (track && !selectedPointName) {
-            setSelectedPointName(track.currentStatus);
-        }
-    }, [track, selectedPointName]);
+        const loadTrack = async () => {
+            try {
+                setLoading(true);
+                const data = await api.getTrack(id);
+                setTrack(data);
+                setSelectedPointName(data.currentStatus);
+            } catch (err) {
+                setError('Ошибка загрузки трека');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadTrack();
+    }, [id]);
 
     useEffect(() => {
         if (track && selectedPointName) {
@@ -32,112 +46,93 @@ const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) 
         }
     }, [track, selectedPointName]);
 
-    if (!track) {
-        return <div>Трек не найден</div>;
-    }
+    if (loading) return <div>Загрузка...</div>;
+    if (error) return <div>{error}</div>;
+    if (!track) return <div>Трек не найден</div>;
 
     const selectedPointIndex = selectedPointName
         ? track.points.findIndex(p => p.name === selectedPointName)
         : -1;
     const selectedPoint = selectedPointIndex !== -1 ? track.points[selectedPointIndex] : null;
 
-    const performUpdate = (updatedTrack) => {
-        onUpdateTrack(updatedTrack);
+    const performUpdate = async (updates) => {
+        try {
+            await api.updateTrack(track.id, updates);
+            // Обновляем локальное состояние
+            setTrack(prev => {
+                const updated = { ...prev };
+                if (updates.name) updated.name = updates.name;
+                if (updates.currentStatus) updated.currentStatus = updates.currentStatus;
+                if (updates.intervalProgress !== undefined) updated.intervalProgress = updates.intervalProgress;
+                if (updates.pointUpdates) {
+                    updates.pointUpdates.forEach(({ order, date, comment }) => {
+                        if (updated.points[order]) {
+                            if (date !== undefined) updated.points[order].date = date;
+                            if (comment !== undefined) updated.points[order].comment = comment;
+                        }
+                    });
+                }
+                return updated;
+            });
+            // Сообщаем главной странице, что данные изменились
+            if (onRefresh) onRefresh();
+        } catch (err) {
+            console.error('Ошибка обновления трека:', err);
+            alert('Не удалось обновить трек');
+        }
     };
 
     const handleStatusChange = (newStatus, date) => {
-        const updated = { ...track, currentStatus: newStatus };
+        const updates = { currentStatus: newStatus };
+        // Если новый статус — интервал, устанавливаем intervalProgress по умолчанию
+        const config = transportConfig[track.transportType];
+        const isInterval = config.intervals.some(i => i.name === newStatus);
+        if (isInterval) {
+            updates.intervalProgress = 50;
+        }
         if (date) {
-            const idx = updated.points.findIndex(p => p.name === newStatus);
+            const idx = track.points.findIndex(p => p.name === newStatus);
             if (idx !== -1) {
-                const oldPoint = updated.points[idx];
-                const newPoint = { ...oldPoint, date };
-                updated.points = [
-                    ...updated.points.slice(0, idx),
-                    newPoint,
-                    ...updated.points.slice(idx + 1)
-                ];
+                updates.pointUpdates = [{ order: idx, date }];
             }
         }
-        performUpdate(updated);
+        performUpdate(updates);
     };
 
-    const handlePointUpdate = (pointIndex, updates) => {
-        const updated = { ...track };
-        const oldPoint = updated.points[pointIndex];
-        const newPoint = { ...oldPoint, ...updates };
-        updated.points = [
-            ...updated.points.slice(0, pointIndex),
-            newPoint,
-            ...updated.points.slice(pointIndex + 1)
-        ];
-        performUpdate(updated);
+    const handlePointUpdate = (pointIndex, { date, comment }) => {
+        const updates = {
+            pointUpdates: [{ order: pointIndex, date, comment }]
+        };
+        performUpdate(updates);
     };
 
     const handleUploadFiles = async (files, pointIndex) => {
-        const readerPromises = files.map(file => {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (ev) => resolve({ 
-                    name: file.name, 
-                    size: file.size,
-                    type: file.type,
-                    dataUrl: ev.target.result 
-                });
-                reader.readAsDataURL(file);
-            });
-        });
-
-        const filesData = await Promise.all(readerPromises);
-
-        const savedFiles = [];
-        for (const fileData of filesData) {
-            try {
-                const id = await saveFileToDB(fileData);
-                savedFiles.push({
-                    id,
-                    name: fileData.name,
-                    size: fileData.size,
-                    type: fileData.type
-                });
-            } catch (error) {
-                console.error('Ошибка сохранения файла в БД:', error);
-            }
+        const point = track.points[pointIndex];
+        if (!point.id) {
+            console.error('У точки нет id, невозможно загрузить файлы');
+            return;
         }
-
-        const updated = { ...track };
-        const oldPoint = updated.points[pointIndex];
-        const newPoint = {
-            ...oldPoint,
-            files: [...oldPoint.files, ...savedFiles]
-        };
-        updated.points = [
-            ...updated.points.slice(0, pointIndex),
-            newPoint,
-            ...updated.points.slice(pointIndex + 1)
-        ];
-        performUpdate(updated);
+        try {
+            const uploaded = await api.uploadFiles(point.id, files);
+            const updated = { ...track };
+            updated.points[pointIndex].files.push(...uploaded);
+            setTrack(updated);
+            if (onRefresh) onRefresh();
+        } catch (err) {
+            console.error('Ошибка загрузки файлов:', err);
+            alert('Не удалось загрузить файлы');
+        }
     };
 
     const handleDeleteFile = async (pointIndex, fileId) => {
-        const point = track.points[pointIndex];
-        const fileIndex = point.files.findIndex(f => f.id === fileId);
-        if (fileIndex === -1) return;
-
         try {
-            await deleteFileFromDB(fileId);
+            await api.deleteFile(fileId);
             const updated = { ...track };
-            const oldPoint = updated.points[pointIndex];
-            const newFiles = oldPoint.files.filter(f => f.id !== fileId);
-            const newPoint = { ...oldPoint, files: newFiles };
-            updated.points = [
-                ...updated.points.slice(0, pointIndex),
-                newPoint,
-                ...updated.points.slice(pointIndex + 1)
-            ];
-            performUpdate(updated);
-        } catch (error) {
-            console.error('Ошибка удаления файла:', error);
+            updated.points[pointIndex].files = updated.points[pointIndex].files.filter(f => f.id !== fileId);
+            setTrack(updated);
+            if (onRefresh) onRefresh();
+        } catch (err) {
+            console.error('Ошибка удаления файла:', err);
             alert('Не удалось удалить файл');
         }
     };
@@ -148,8 +143,7 @@ const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) 
 
     const handleTitleSave = () => {
         if (editedTitle.trim() && editedTitle !== track.name) {
-            const updated = { ...track, name: editedTitle.trim() };
-            performUpdate(updated);
+            performUpdate({ name: editedTitle.trim() });
         }
         setIsEditingTitle(false);
     };
@@ -169,12 +163,27 @@ const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) 
     };
 
     const handleCopyConfirm = (withFiles) => {
-        onCopyTrack(track, withFiles);
+        api.copyTrack(track.id, withFiles)
+            .then(() => {
+                if (onRefresh) onRefresh();
+                navigate('/');
+            })
+            .catch(err => {
+                console.error('Ошибка копирования:', err);
+                alert('Не удалось скопировать трек');
+            });
     };
 
-    const handleDelete = () => {
-        onDeleteTrack(track.id);
-        navigate('/');
+    const handleDelete = async () => {
+        if (!window.confirm('Удалить перевозку?')) return;
+        try {
+            await api.deleteTrack(track.id);
+            if (onRefresh) onRefresh();
+            navigate('/');
+        } catch (err) {
+            console.error('Ошибка удаления:', err);
+            alert('Не удалось удалить трек');
+        }
     };
 
     return (

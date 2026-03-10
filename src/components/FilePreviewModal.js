@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import { getFileFromDB } from '../utils/db';
+import { api } from '../api';
 import {
     isNativePreviewable,
     isOfficeFile,
@@ -43,25 +43,20 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
                 setFileData(null);
                 setTextContent(null);
 
-                const file = await getFileFromDB(fileId);
-                if (!file) {
+                const response = await fetch(api.getFileUrl(fileId));
+                if (!response.ok) {
                     setError('Файл не найден');
                     return;
                 }
-
-                // Сохраняем новый URL в ref
-                fileUrlRef.current = file.url;
-                setFileData(file);
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                fileUrlRef.current = url;
+                setFileData({ url, blob });
 
                 // Если файл текстовый, загружаем его содержимое как текст
                 if (isTextFile(fileName, fileType)) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        setTextContent(e.target.result);
-                    };
-                    reader.readAsText(file.blob);
-                } else {
-                    setTextContent(null);
+                    const text = await blob.text();
+                    setTextContent(text);
                 }
             } catch (err) {
                 setError('Ошибка загрузки файла');
@@ -94,7 +89,7 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
         if (error) return <div className="preview-error">{error}</div>;
         if (!fileData) return <p>Файл не доступен</p>;
 
-        const { url } = fileData;
+        const { url, blob } = fileData;
         const iconClass = getFileIcon(fileType);
 
         // 1. Текстовые файлы (включая .lua, .js и т.д.) — показываем в <pre> с белым фоном
@@ -139,7 +134,7 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
 
         // 6. Офисные файлы (Word, Excel)
         if (isOfficeFile(fileType)) {
-            return <OfficePreview blob={fileData.blob} mimeType={fileType} />;
+            return <OfficePreview blob={blob} mimeType={fileType} />;
         }
 
         // 7. Все остальные типы — только скачивание (без открытия в новой вкладке)
@@ -149,7 +144,7 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
                 <p>Предпросмотр для этого типа файлов не поддерживается.</p>
                 <p>Вы можете скачать файл, чтобы открыть его в соответствующей программе.</p>
                 <a
-                    href={url}
+                    href={api.downloadFileUrl(fileId)}
                     download={fileName}
                     className="btn-download"
                     style={{ marginTop: '1rem' }}
