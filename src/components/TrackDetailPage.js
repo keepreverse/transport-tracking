@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import StatusTimeline from './StatusTimeline';
 import PointDetailsPanel from './PointDetailsPanel';
 import TrackMenu from './TrackMenu';
+import CopyTrackModal from './CopyTrackModal';
 import { getTransportIcon, getTransportName } from '../utils/config';
 import { saveFileToDB, deleteFileFromDB } from '../utils/db';
 
@@ -14,6 +15,7 @@ const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) 
     const [selectedPointName, setSelectedPointName] = useState(null);
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState('');
+    const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
 
     useEffect(() => {
         if (track && !selectedPointName) {
@@ -162,8 +164,12 @@ const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) 
         if (e.key === 'Escape') handleTitleCancel();
     };
 
-    const handleCopy = () => {
-        onCopyTrack(track);
+    const handleCopyClick = () => {
+        setIsCopyModalOpen(true);
+    };
+
+    const handleCopyConfirm = (withFiles) => {
+        onCopyTrack(track, withFiles);
     };
 
     const handleDelete = () => {
@@ -179,7 +185,7 @@ const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) 
                 </button>
                 <TrackMenu
                     onEdit={() => setIsEditingTitle(true)}
-                    onCopy={handleCopy}
+                    onCopy={handleCopyClick}
                     onDelete={handleDelete}
                 />
             </div>
@@ -203,6 +209,9 @@ const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) 
                 <span className="transport-badge">
                     <i className={`fas ${getTransportIcon(track.transportType)}`}></i> {getTransportName(track.transportType)}
                 </span>
+                <span className="supplier-badge">
+                    <i className="fas fa-user"></i> {track.supplier}
+                </span>
             </div>
 
             <StatusTimeline
@@ -217,6 +226,12 @@ const TrackDetailPage = ({ tracks, onUpdateTrack, onDeleteTrack, onCopyTrack }) 
                 onUpdatePoint={(updates) => handlePointUpdate(selectedPointIndex, updates)}
                 onUploadFiles={(files) => handleUploadFiles(files, selectedPointIndex)}
                 onDeleteFile={(fileId) => handleDeleteFile(selectedPointIndex, fileId)}
+            />
+
+            <CopyTrackModal
+                isOpen={isCopyModalOpen}
+                onClose={() => setIsCopyModalOpen(false)}
+                onConfirm={handleCopyConfirm}
             />
         </div>
     );

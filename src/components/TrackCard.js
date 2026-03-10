@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { getTransportIcon, transportConfig } from '../utils/config';
 import { getProgressPercent } from '../utils/progress';
 import TrackMenu from './TrackMenu';
+import CopyTrackModal from './CopyTrackModal';
 
 const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
     const [isEditingTitle, setIsEditingTitle] = useState(false);
     const [editedTitle, setEditedTitle] = useState(track.name);
+    const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
 
     const config = transportConfig[track.transportType];
     const points = track.points;
@@ -30,6 +32,7 @@ const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
     const fillPercent = getProgressPercent(track);
     const lastStatus = track.currentStatus;
     const lastDate = getLastDate();
+    const whatSupplier = track.supplier;
 
     const handleTitleSave = () => {
         if (editedTitle.trim() && editedTitle !== track.name) {
@@ -47,6 +50,14 @@ const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') handleTitleSave();
         if (e.key === 'Escape') handleTitleCancel();
+    };
+
+    const handleCopyClick = () => {
+        setIsCopyModalOpen(true);
+    };
+
+    const handleCopyConfirm = (withFiles) => {
+        onCopy(track, withFiles);
     };
 
     // Режим редактирования – без ссылки
@@ -70,8 +81,9 @@ const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
                     </div>
                     <div className="track-card-body">
                         <div className="track-status"><i className="fas fa-info-circle"></i> {lastStatus}</div>
+                        <div className="track-supplier"><i className="fas fa-user"></i> {whatSupplier}</div>
                         <div className="track-date"><i className="far fa-calendar-alt"></i> {lastDate}</div>
-                        
+
                         <div className="track-mini-timeline">
                             <div className="mini-progress-line">
                                 <div className="mini-progress-fill" style={{ width: `${fillPercent}%` }}></div>
@@ -94,8 +106,13 @@ const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
                 </div>
                 <TrackMenu
                     onEdit={() => setIsEditingTitle(true)}
-                    onCopy={() => onCopy(track)}
+                    onCopy={handleCopyClick}
                     onDelete={() => onDelete(track.id)}
+                />
+                <CopyTrackModal
+                    isOpen={isCopyModalOpen}
+                    onClose={() => setIsCopyModalOpen(false)}
+                    onConfirm={handleCopyConfirm}
                 />
             </div>
         );
@@ -112,8 +129,9 @@ const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
                     </div>
                     <div className="track-card-body">
                         <div className="track-status"><i className="fas fa-info-circle"></i> {lastStatus}</div>
+                        <div className="track-supplier"><i className="fas fa-user"></i> {whatSupplier}</div>
                         <div className="track-date"><i className="far fa-calendar-alt"></i> {lastDate}</div>
-                        
+
                         <div className="track-mini-timeline">
                             <div className="mini-progress-line">
                                 <div className="mini-progress-fill" style={{ width: `${fillPercent}%` }}></div>
@@ -137,8 +155,13 @@ const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
             </Link>
             <TrackMenu
                 onEdit={() => setIsEditingTitle(true)}
-                onCopy={() => onCopy(track)}
+                onCopy={handleCopyClick}
                 onDelete={() => onDelete(track.id)}
+            />
+            <CopyTrackModal
+                isOpen={isCopyModalOpen}
+                onClose={() => setIsCopyModalOpen(false)}
+                onConfirm={handleCopyConfirm}
             />
         </div>
     );

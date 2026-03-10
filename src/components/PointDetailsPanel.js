@@ -34,6 +34,20 @@ const PointDetailsPanel = ({ point, onUpdatePoint, onUploadFiles, onDeleteFile }
         }
     }, [point]);
 
+    // Обновление полей и сброс режима редактирования при смене точки
+    useEffect(() => {
+        // Закрываем режим редактирования при переключении на другую точку
+        setIsEditing(false);
+        // Устанавливаем данные из текущей точки
+        if (point) {
+            setComment(point.comment || '');
+            setDate(point.date || '');
+        } else {
+            setComment('');
+            setDate('');
+        }
+    }, [point]);
+
     // Загрузка файлов, которых ещё нет в кеше
     useEffect(() => {
         if (!point || !point.files || point.files.length === 0) {
@@ -183,7 +197,7 @@ const PointDetailsPanel = ({ point, onUpdatePoint, onUploadFiles, onDeleteFile }
                 )}
 
                 <div className="detail-row">
-                    <label>Файлы</label>
+                    <label>Вложения</label>
                     <button className="btn-upload" onClick={handleUploadClick}>
                         <i className="fas fa-upload"></i> Загрузить файлы
                     </button>

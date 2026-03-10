@@ -124,3 +124,36 @@ export const deleteFilesFromDB = async (ids) => {
         });
     }));
 };
+
+// Копировать файл: получить по ID и сохранить с новым ID, вернуть новый ID
+export const copyFileInDB = async (fileId) => {
+    const db = await openDB();
+    // Получаем исходный файл
+    const fileData = await new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readonly');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.get(fileId);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = (e) => reject(e.target.error);
+    });
+    if (!fileData) throw new Error('Файл не найден');
+
+    // Создаём новый ID
+    const newId = generateUUID();
+    const newFileData = {
+        ...fileData,
+        id: newId,
+        // blob остаётся тем же (это копия, но мы не мутируем исходный)
+    };
+
+    // Сохраняем копию
+    await new Promise((resolve, reject) => {
+        const transaction = db.transaction(STORE_NAME, 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.add(newFileData);
+        request.onsuccess = () => resolve();
+        request.onerror = (e) => reject(e.target.error);
+    });
+
+    return newId;
+};

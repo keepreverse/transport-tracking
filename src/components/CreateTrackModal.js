@@ -4,13 +4,15 @@ import Modal from './Modal';
 const CreateTrackModal = ({ isOpen, onClose, onCreate }) => {
     const [name, setName] = useState('');
     const [type, setType] = useState('auto');
+    const [supplier, setSupplier] = useState('Angela');
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!name.trim()) return;
-        onCreate(name.trim(), type);
+        onCreate(name.trim(), type, supplier);
         setName('');
         setType('auto');
+        setSupplier('Angela');
         onClose();
     };
 
@@ -47,9 +49,26 @@ const CreateTrackModal = ({ isOpen, onClose, onCreate }) => {
                         ))}
                     </div>
                 </div>
+                <div className="mb-3">
+                    <label className="form-label">Поставщик</label>
+                    <div className="supplier-options">
+                        {['Angela', 'Wendy'].map(s => (
+                            <label key={s} className="supplier-option">
+                                <input
+                                    type="radio"
+                                    name="supplier"
+                                    value={s}
+                                    checked={supplier === s}
+                                    onChange={(e) => setSupplier(e.target.value)}
+                                />
+                                <i className={`fas fa-user`}></i> {s}
+                            </label>
+                        ))}
+                    </div>
+                </div>
                 <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={onClose}>Отмена</button>
-                    <button type="submit" className="btn btn-primary">Создать</button>
+                    <button type="button" className="modal-btn modal-btn-secondary" onClick={onClose}>Отмена</button>
+                    <button type="submit" className="modal-btn modal-btn-primary">Создать</button>
                 </div>
             </form>
         </Modal>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import { getFileFromDB } from '../utils/db';
 import {
@@ -16,18 +16,41 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [textContent, setTextContent] = useState(null); // для текстовых файлов
+    const fileUrlRef = useRef(null); // для хранения текущего blob-URL и его очистки
 
+    // Очистка URL при размонтировании или смене fileId
+    useEffect(() => {
+        return () => {
+            if (fileUrlRef.current) {
+                URL.revokeObjectURL(fileUrlRef.current);
+                fileUrlRef.current = null;
+            }
+        };
+    }, [fileId]);
+
+    // Загрузка файла
     useEffect(() => {
         if (!isOpen || !fileId) return;
 
         const loadFile = async () => {
             try {
                 setLoading(true);
+                // Очищаем предыдущий URL перед загрузкой нового
+                if (fileUrlRef.current) {
+                    URL.revokeObjectURL(fileUrlRef.current);
+                    fileUrlRef.current = null;
+                }
+                setFileData(null);
+                setTextContent(null);
+
                 const file = await getFileFromDB(fileId);
                 if (!file) {
                     setError('Файл не найден');
                     return;
                 }
+
+                // Сохраняем новый URL в ref
+                fileUrlRef.current = file.url;
                 setFileData(file);
 
                 // Если файл текстовый, загружаем его содержимое как текст
@@ -148,7 +171,7 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
                     {renderPreview()}
                 </div>
                 <div className="modal-footer">
-                    <button className="btn btn-secondary" onClick={onClose}>Закрыть</button>
+                    <button className="modal-btn modal-btn-secondary" onClick={onClose}>Закрыть</button>
                 </div>
             </div>
         </div>,
