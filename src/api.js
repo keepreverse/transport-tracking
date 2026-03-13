@@ -1,7 +1,6 @@
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export const api = {
-    // Получение списка треков
     getTracks: (params = {}) => {
         const url = new URL(`${API_BASE}/tracks/`);
         if (params.transport) url.searchParams.append('transport', params.transport);
@@ -14,28 +13,24 @@ export const api = {
         });
     },
 
-    // Получение одного трека
     getTrack: (id) => fetch(`${API_BASE}/tracks/${id}`).then(res => {
         if (!res.ok) throw new Error('Трек не найден');
         return res.json();
     }),
 
-    // Создание нового трека с точками
     createTrack: (trackData) => fetch(`${API_BASE}/tracks/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(trackData) // теперь включает поле points
+        body: JSON.stringify(trackData)
     }).then(res => {
         if (!res.ok) throw new Error('Ошибка создания трека');
         return res.json();
     }),
 
-    // Обновление трека (только изменяемые поля)
     updateTrack: (id, trackData) => {
         const payload = {};
         if (trackData.name) payload.name = trackData.name;
         if (trackData.currentStatus) payload.currentStatus = trackData.currentStatus;
-        if (trackData.intervalProgress !== undefined) payload.intervalProgress = trackData.intervalProgress;
         if (trackData.pointUpdates && trackData.pointUpdates.length > 0) {
             payload.points = trackData.pointUpdates;
         }
@@ -49,7 +44,6 @@ export const api = {
         });
     },
 
-    // Копирование трека
     copyTrack: (id, withFiles) => fetch(`${API_BASE}/tracks/${id}/copy`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -59,7 +53,6 @@ export const api = {
         return res.json();
     }),
 
-    // Удаление трека
     deleteTrack: (id) => fetch(`${API_BASE}/tracks/${id}`, {
         method: 'DELETE'
     }).then(res => {
@@ -67,7 +60,6 @@ export const api = {
         return res.json();
     }),
 
-    // Загрузка файлов
     uploadFiles: (pointId, files) => {
         const formData = new FormData();
         formData.append('pointId', pointId);

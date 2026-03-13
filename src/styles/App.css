@@ -343,7 +343,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: clamp(2rem, 4vmin, 2.5rem);           /* от 32px до 40px */
+    width: clamp(4rem, 4.5vmin, 5rem);
 }
 
 .mini-point-icon {
@@ -562,15 +562,21 @@ body {
     box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
 }
 
-/* Подпись статуса */
 .point-label {
-    margin-top: clamp(4.5rem, 4vmin, 4.5rem);
+    position: absolute;
+    top: calc(100% + 1.2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(4rem, 5vw, 6rem); /* увеличена для комфортного переноса */
     font-weight: 600;
     font-size: clamp(0.7rem, 1.2vmin, 0.8rem);
     color: #334155;
     line-height: 1.3;
     text-transform: uppercase;
     letter-spacing: 0.3px;
+    text-align: center;
+    white-space: normal;
+    hyphens: auto; /* опционально: добавляет мягкие переносы, если слово не помещается */
 }
 
 /* Панель управления */
@@ -681,6 +687,27 @@ body {
 .point-details-panel .edit-actions {
     display: flex;
     gap: 0.5rem;
+}
+
+.btn-clear-date {
+    background: none;
+    border: 2px solid #ef4444;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ef4444;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 1rem;
+    padding: 0;
+}
+
+.btn-clear-date:hover {
+    background: #ef4444;
+    color: white;
 }
 
 .point-details-panel .btn-save,

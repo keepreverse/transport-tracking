@@ -5,7 +5,6 @@ import PointDetailsPanel from './PointDetailsPanel';
 import TrackMenu from './TrackMenu';
 import CopyTrackModal from './CopyTrackModal';
 import { getTransportIcon, getTransportName } from '../utils/config';
-import { transportConfig } from '../utils/config'; // для проверки интервалов
 import { api } from '../api';
 
 const TrackDetailPage = ({ onRefresh }) => {
@@ -58,12 +57,10 @@ const TrackDetailPage = ({ onRefresh }) => {
     const performUpdate = async (updates) => {
         try {
             await api.updateTrack(track.id, updates);
-            // Обновляем локальное состояние
             setTrack(prev => {
                 const updated = { ...prev };
                 if (updates.name) updated.name = updates.name;
                 if (updates.currentStatus) updated.currentStatus = updates.currentStatus;
-                if (updates.intervalProgress !== undefined) updated.intervalProgress = updates.intervalProgress;
                 if (updates.pointUpdates) {
                     updates.pointUpdates.forEach(({ order, date, comment }) => {
                         if (updated.points[order]) {
@@ -74,7 +71,6 @@ const TrackDetailPage = ({ onRefresh }) => {
                 }
                 return updated;
             });
-            // Сообщаем главной странице, что данные изменились
             if (onRefresh) onRefresh();
         } catch (err) {
             console.error('Ошибка обновления трека:', err);
@@ -84,12 +80,6 @@ const TrackDetailPage = ({ onRefresh }) => {
 
     const handleStatusChange = (newStatus, date) => {
         const updates = { currentStatus: newStatus };
-        // Если новый статус — интервал, устанавливаем intervalProgress по умолчанию
-        const config = transportConfig[track.transportType];
-        const isInterval = config.intervals.some(i => i.name === newStatus);
-        if (isInterval) {
-            updates.intervalProgress = 50;
-        }
         if (date) {
             const idx = track.points.findIndex(p => p.name === newStatus);
             if (idx !== -1) {

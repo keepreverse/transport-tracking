@@ -2,56 +2,48 @@ export const transportConfig = {
     auto: {
         points: [
             { name: 'Отгрузка', icon: 'fa-industry' },
+            { name: 'В пути до границы', icon: 'fa-truck' },
             { name: 'Граница', icon: 'fa-flag' },
+            { name: 'В пути до СВХ', icon: 'fa-truck' },
             { name: 'СВХ', icon: 'fa-cubes' },
+            { name: 'В пути до склада', icon: 'fa-truck' },
             { name: 'Доставлено', icon: 'fa-warehouse' }
-        ],
-        intervals: [
-            { name: 'в пути до границы', from: 0, to: 1 },
-            { name: 'в пути до СВХ', from: 1, to: 2 },
-            { name: 'в пути до склада', from: 2, to: 3 }
         ]
     },
     train: {
         points: [
             { name: 'Отгрузка', icon: 'fa-industry' },
+            { name: 'В пути до станции отправления', icon: 'fa-box' },
             { name: 'Станция отправления', icon: 'fa-train' },
+            { name: 'В пути до границы', icon: 'fa-box' },
             { name: 'Граница', icon: 'fa-flag' },
+            { name: 'В пути до СВХ', icon: 'fa-box' },
             { name: 'СВХ', icon: 'fa-cubes' },
+            { name: 'В пути до склада', icon: 'fa-box' },
             { name: 'Доставлено', icon: 'fa-warehouse' }
-        ],
-        intervals: [
-            { name: 'в пути до станции отправления', from: 0, to: 1 },
-            { name: 'в пути до границы', from: 1, to: 2 },
-            { name: 'в пути до СВХ', from: 2, to: 3 },
-            { name: 'в пути до склада', from: 3, to: 4 }
         ]
     },
     air: {
         points: [
             { name: 'Отгрузка', icon: 'fa-industry' },
+            { name: 'В пути до аэропорта', icon: 'fa-truck' },
             { name: 'Аэропорт отправления', icon: 'fa-plane-departure' },
+            { name: 'В полете', icon: 'fa-plane' },
             { name: 'Аэропорт прибытия', icon: 'fa-plane-arrival' },
+            { name: 'В пути до склада', icon: 'fa-truck' },
             { name: 'Доставлено', icon: 'fa-warehouse' }
-        ],
-        intervals: [
-            { name: 'в пути до аэропорта', from: 0, to: 1 },
-            { name: 'В полете', from: 1, to: 2 },
-            { name: 'в пути до склада', from: 2, to: 3, transportIcon: 'fa-truck' }
         ]
     },
     sea_rail: {
         points: [
             { name: 'Отгрузка', icon: 'fa-industry' },
+            { name: 'В пути до порта отправления', icon: 'fa-truck' },
             { name: 'Порт отправления', icon: 'fa-ship' },
+            { name: 'В плавании', icon: 'fa-ship' },
             { name: 'Порт прибытия', icon: 'fa-ship' },
             { name: 'Перегруз на ЖД', icon: 'fa-train' },
+            { name: 'В пути до склада', icon: 'fa-box' },
             { name: 'Доставлено', icon: 'fa-warehouse' }
-        ],
-        intervals: [
-            { name: 'в пути до порта отправления', from: 0, to: 1 },
-            { name: 'В плавании', from: 1, to: 2 },
-            { name: 'в пути до склада', from: 3, to: 4, transportIcon: 'fa-truck' }
         ]
     }
 };

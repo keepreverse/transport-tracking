@@ -49,6 +49,10 @@ const PointDetailsPanel = ({ point, onUpdatePoint, onUploadFiles, onDeleteFile }
         setIsEditing(false);
     };
 
+    const handleClearDate = () => {
+        setDate('');
+    };
+
     const handleUploadClick = () => {
         const input = document.createElement('input');
         input.type = 'file';
@@ -105,7 +109,17 @@ const PointDetailsPanel = ({ point, onUpdatePoint, onUploadFiles, onDeleteFile }
                     <div className="edit-mode">
                         <div className="detail-row">
                             <label>Дата</label>
-                            <DatePickerFlatpickr value={date} onChange={setDate} />
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <DatePickerFlatpickr value={date} onChange={setDate} />
+                                <button
+                                    type="button"
+                                    className="btn-clear-date"
+                                    onClick={handleClearDate}
+                                    title="Очистить дату"
+                                >
+                                    <i className="fas fa-times"></i>
+                                </button>
+                            </div>
                         </div>
                         <div className="detail-row">
                             <label>Комментарий</label>

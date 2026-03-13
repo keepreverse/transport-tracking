@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getTransportIcon, transportConfig } from '../utils/config';
+import { getTransportIcon } from '../utils/config';
 import { getProgressPercent } from '../utils/progress';
 import TrackMenu from './TrackMenu';
 import CopyTrackModal from './CopyTrackModal';
@@ -10,19 +10,10 @@ const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
     const [editedTitle, setEditedTitle] = useState(track.name);
     const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
 
-    const config = transportConfig[track.transportType];
     const points = track.points;
 
     const pointIdx = points.findIndex(p => p.name === track.currentStatus);
-    const interval = config.intervals.find(i => i.name === track.currentStatus);
-    let completedPoints = [];
-    if (pointIdx !== -1) {
-        completedPoints = points.map((_, idx) => idx <= pointIdx);
-    } else if (interval) {
-        completedPoints = points.map((_, idx) => idx <= interval.from);
-    } else {
-        completedPoints = points.map(() => false);
-    }
+    const completedPoints = points.map((_, idx) => idx <= pointIdx);
 
     const getLastDate = () => {
         const dates = points.map(p => p.date).filter(d => d);
