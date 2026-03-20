@@ -60,8 +60,8 @@ export const getTransportIcon = (type) => {
 
 export const getTransportName = (type) => {
     const names = {
-        auto: 'Авто',
-        train: 'ЖД',
+        auto: 'Авто (фура)',
+        train: 'ЖД (контейнер)',
         air: 'Авиа',
         sea_rail: 'Море + ЖД'
     };

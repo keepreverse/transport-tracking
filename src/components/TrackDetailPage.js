@@ -37,6 +37,12 @@ const TrackDetailPage = ({ onRefresh }) => {
     }, [id]);
 
     useEffect(() => {
+        if (track) {
+            setEditedTitle(track.name);
+        }
+    }, [track]);
+
+    useEffect(() => {
         if (track && selectedPointName) {
             const pointExists = track.points.some(p => p.name === selectedPointName);
             if (!pointExists) {
@@ -182,11 +188,16 @@ const TrackDetailPage = ({ onRefresh }) => {
                 <button className="btn-back" onClick={() => navigate('/')}>
                     <i className="fas fa-arrow-left"></i> Назад
                 </button>
+
                 <TrackMenu
-                    onEdit={() => setIsEditingTitle(true)}
+                    onEdit={() => {
+                        setEditedTitle(track.name);
+                        setIsEditingTitle(true);
+                    }}
                     onCopy={handleCopyClick}
                     onDelete={handleDelete}
                 />
+
             </div>
 
             <div className="track-header" style={{ marginBottom: 'clamp(0.75rem, 2vh, 1.5rem)', marginTop: 'clamp(0.75rem, 2vh, 1.5rem)' }}>

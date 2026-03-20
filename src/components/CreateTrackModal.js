@@ -44,7 +44,7 @@ const CreateTrackModal = ({ isOpen, onClose, onCreate }) => {
                                     onChange={(e) => setType(e.target.value)}
                                 />
                                 <i className={`fas ${t === 'auto' ? 'fa-truck' : t === 'train' ? 'fa-train' : t === 'air' ? 'fa-plane' : 'fa-ship'}`}></i>
-                                {t === 'auto' ? 'Авто' : t === 'train' ? 'ЖД' : t === 'air' ? 'Авиа' : 'Море + ЖД'}
+                                {t === 'auto' ? 'Авто (фура)' : t === 'train' ? 'ЖД (контейнер)' : t === 'air' ? 'Авиа' : 'Море + ЖД'}
                             </label>
                         ))}
                     </div>

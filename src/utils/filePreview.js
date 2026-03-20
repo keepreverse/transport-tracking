@@ -1,14 +1,12 @@
-// Определяем, можно ли использовать встроенный просмотр через браузер (iframe)
 export const isNativePreviewable = (mimeType) => {
     if (!mimeType) return false;
     return (
         mimeType.startsWith('image/') ||
         mimeType === 'application/pdf' ||
-        mimeType.startsWith('text/')   // текстовые файлы браузер покажет в iframe
+        mimeType.startsWith('text/')
     );
 };
 
-// Типы офисных документов, которые мы можем обработать
 export const OFFICE_TYPES = {
     DOCX: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     DOC: 'application/msword',
@@ -25,7 +23,6 @@ export const isOfficeFile = (mimeType) => {
 export const isAudio = (mimeType) => mimeType?.startsWith('audio/');
 export const isVideo = (mimeType) => mimeType?.startsWith('video/');
 
-// Расширения файлов, которые можно считать текстовыми (если MIME-тип не определён)
 const TEXT_EXTENSIONS = [
     'txt', 'js', 'jsx', 'ts', 'tsx', 'html', 'htm', 'css', 'scss', 'less',
     'json', 'xml', 'yaml', 'yml', 'md', 'markdown', 'lua', 'py', 'rb', 'php',
@@ -34,14 +31,12 @@ const TEXT_EXTENSIONS = [
 ];
 
 export const isTextFile = (fileName, mimeType) => {
-    // Если MIME-тип уже текстовый
     if (mimeType && mimeType.startsWith('text/')) return true;
     if (!fileName) return false;
     const ext = fileName.split('.').pop()?.toLowerCase();
     return ext ? TEXT_EXTENSIONS.includes(ext) : false;
 };
 
-// Получить иконку по MIME-типу
 export const getFileIcon = (mimeType) => {
     if (!mimeType) return 'fa-file-alt';
     if (mimeType.startsWith('image/')) return 'fa-file-image';

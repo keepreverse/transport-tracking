@@ -51,7 +51,6 @@ const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
         onCopy(track, withFiles);
     };
 
-    // Режим редактирования – без ссылки
     if (isEditingTitle) {
         return (
             <div className="track-card-wrapper">
@@ -109,7 +108,6 @@ const TrackCard = ({ track, onUpdateTrack, onCopy, onDelete }) => {
         );
     }
 
-    // Обычный режим – внутри ссылки
     return (
         <div className="track-card-wrapper">
             <Link to={`/track/${track.id}`} className="track-card-link" style={{ textDecoration: 'none', color: 'inherit', flex: 1 }}>

@@ -8,15 +8,14 @@ const renderExcel = (arrayBuffer) => {
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
     const html = XLSX.utils.sheet_to_html(worksheet);
-    return html; // возвращаем строку, а не объект
+    return html;
 };
 
 const renderWord = async (arrayBuffer) => {
     const result = await mammoth.convertToHtml({ arrayBuffer });
-    return result.value; // строка
+    return result.value;
 };
 
-// Заглушка для PowerPoint
 const renderPowerPoint = () => {
     return '<p class="preview-unsupported-message">Предпросмотр PowerPoint временно недоступен</p>';
 };

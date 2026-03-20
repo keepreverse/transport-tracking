@@ -3,7 +3,7 @@ import TrackCard from './TrackCard';
 
 const TrackList = ({ tracks, onUpdateTrack, onCopyTrack, onDeleteTrack }) => {
     if (tracks.length === 0) {
-        return <div className="empty-files" style={{ marginTop: 'clamp(2rem, 4vh, 3rem)' }}>Нет треков</div>;
+        return <div className="empty-files" style={{ marginTop: 'clamp(2rem, 4vh, 3rem)' }}>Нет активных маршрутов</div>;
     }
 
     return (

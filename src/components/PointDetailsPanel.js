@@ -3,7 +3,6 @@ import DatePickerFlatpickr from './DatePickerFlatpickr';
 import FilePreviewModal from './FilePreviewModal';
 import { api } from '../api';
 
-// Форматирование размера файла
 const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Б';
     const k = 1024;
@@ -17,14 +16,10 @@ const PointDetailsPanel = ({ point, onUpdatePoint, onUploadFiles, onDeleteFile }
     const [comment, setComment] = useState('');
     const [date, setDate] = useState('');
 
-    // Для модала предпросмотра
-    const [previewFile, setPreviewFile] = useState(null); // { fileId, fileName, fileType }
+    const [previewFile, setPreviewFile] = useState(null);
 
-    // Обновление полей и сброс режима редактирования при смене точки
     useEffect(() => {
-        // Закрываем режим редактирования при переключении на другую точку
         setIsEditing(false);
-        // Устанавливаем данные из текущей точки
         if (point) {
             setComment(point.comment || '');
             setDate(point.date || '');
@@ -64,7 +59,6 @@ const PointDetailsPanel = ({ point, onUpdatePoint, onUploadFiles, onDeleteFile }
         input.click();
     };
 
-    // Открыть предпросмотр файла
     const handleView = (fileId, fileName, fileType) => {
         setPreviewFile({ fileId, fileName, fileType });
     };

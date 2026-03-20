@@ -26,7 +26,6 @@ const AppContent = () => {
             sort: sortBy
         }).then(data => {
             let sortedData = data;
-            // Если сортировка по прогрессу, выполняем её на клиенте
             if (sortBy === 'progress_asc' || sortBy === 'progress_desc') {
                 sortedData = [...data].sort((a, b) => {
                     const pA = getProgressPercent(a);
@@ -83,7 +82,7 @@ const AppContent = () => {
                     <Route path="/" element={
                         <>
                             <div className="page-header">
-                                <h1><i className="fas fa-map-marked-alt me-2"></i>My Tracks</h1>
+                                <h1><i className="fas fa-map-marked-alt me-2"></i>Заказы</h1>
                                 <div className="search-wrapper">
                                     <input
                                         type="text"

@@ -1,7 +1,7 @@
 import React from 'react';
 import Flatpickr from 'react-flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import 'flatpickr/dist/l10n/ru.js';   // Добавить эту строку
+import 'flatpickr/dist/l10n/ru.js';
 
 
 const DatePickerFlatpickr = ({ value, onChange, placeholder = 'дд.мм.гггг' }) => {

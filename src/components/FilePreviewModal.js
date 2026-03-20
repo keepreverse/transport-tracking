@@ -12,13 +12,12 @@ import {
 import OfficePreview from './OfficePreview';
 
 const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
-    const [fileData, setFileData] = useState(null); // { blob, url }
+    const [fileData, setFileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [textContent, setTextContent] = useState(null); // для текстовых файлов
-    const fileUrlRef = useRef(null); // для хранения текущего blob-URL и его очистки
+    const [textContent, setTextContent] = useState(null);
+    const fileUrlRef = useRef(null);
 
-    // Очистка URL при размонтировании или смене fileId
     useEffect(() => {
         return () => {
             if (fileUrlRef.current) {
@@ -28,14 +27,12 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
         };
     }, [fileId]);
 
-    // Загрузка файла
     useEffect(() => {
         if (!isOpen || !fileId) return;
 
         const loadFile = async () => {
             try {
                 setLoading(true);
-                // Очищаем предыдущий URL перед загрузкой нового
                 if (fileUrlRef.current) {
                     URL.revokeObjectURL(fileUrlRef.current);
                     fileUrlRef.current = null;
@@ -53,7 +50,6 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
                 fileUrlRef.current = url;
                 setFileData({ url, blob });
 
-                // Если файл текстовый, загружаем его содержимое как текст
                 if (isTextFile(fileName, fileType)) {
                     const text = await blob.text();
                     setTextContent(text);
@@ -92,7 +88,6 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
         const { url, blob } = fileData;
         const iconClass = getFileIcon(fileType);
 
-        // 1. Текстовые файлы (включая .lua, .js и т.д.) — показываем в <pre> с белым фоном
         if (isTextFile(fileName, fileType)) {
             if (textContent === null) return <div className="preview-loading">Загрузка текста...</div>;
             return (
@@ -102,12 +97,10 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
             );
         }
 
-        // 2. Изображения
         if (fileType?.startsWith('image/')) {
             return <img src={url} alt={fileName} className="preview-image" />;
         }
 
-        // 3. Аудио
         if (isAudio(fileType)) {
             return (
                 <audio controls className="preview-audio">
@@ -117,7 +110,6 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
             );
         }
 
-        // 4. Видео
         if (isVideo(fileType)) {
             return (
                 <video controls className="preview-video">
@@ -127,17 +119,14 @@ const FilePreviewModal = ({ isOpen, onClose, fileId, fileName, fileType }) => {
             );
         }
 
-        // 5. PDF и другие нативные (кроме текста, который уже обработан)
         if (isNativePreviewable(fileType)) {
             return <iframe src={url} title={fileName} className="preview-iframe" />;
         }
 
-        // 6. Офисные файлы (Word, Excel)
         if (isOfficeFile(fileType)) {
             return <OfficePreview blob={blob} mimeType={fileType} />;
         }
 
-        // 7. Все остальные типы — только скачивание (без открытия в новой вкладке)
         return (
             <div className="preview-unsupported">
                 <i className={`fas ${iconClass}`} style={{ fontSize: '4rem', color: '#2563eb', marginBottom: '1rem' }}></i>
